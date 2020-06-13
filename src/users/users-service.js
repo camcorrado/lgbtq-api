@@ -38,13 +38,8 @@ const UsersService = {
         return {
             id: user.id,
             full_name: xss(user.full_name),
-            username: xss(user.username),
             email: xss(user.email),
-            date_created: new Date(user.date_created),
-            bio: xss(user.bio),
-            profile_pic: xss(user.profile_pic),
-            interests: xss(user.interests),
-            pronouns: xss(user.pronouns)
+            date_created: new Date(user.date_created)
         }
     },
   }

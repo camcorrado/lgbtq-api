@@ -6,7 +6,7 @@ const helpers = require('./test-helpers')
 describe('Auth Endpoints', function() {
     let db
 
-    const { testUsers } = helpers.makeProfilesFixtures()
+    const { testUsers } = helpers.makeFixtures()
     const testUser = testUsers[0]
 
     before('make knex instance', () => {
@@ -26,17 +26,17 @@ describe('Auth Endpoints', function() {
 
     describe(`POST /api/auth/login`, () => {
         beforeEach('insert users', () =>
-        helpers.seedUsers(
-            db,
-            testUsers,
-        )
+            helpers.seedUsers(
+                db,
+                testUsers,
+            )
         )
 
         const requiredFields = ['email', 'password']
 
         requiredFields.forEach(field => {
             const loginAttemptBody = {
-                user_name: testUser.email,
+                email: testUser.email,
                 password: testUser.password,
             }
         
@@ -70,7 +70,7 @@ describe('Auth Endpoints', function() {
 
         it(`responds 200 and JWT auth token using secret when valid credentials`, () => {
             const userValidCreds = {
-                user_name: testUser.email,
+                email: testUser.email,
                 password: testUser.password
             }
             const expectedToken = jwt.sign(

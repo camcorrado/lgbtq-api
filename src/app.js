@@ -6,6 +6,9 @@ const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const authRouter = require('./auth/auth-router')
 const usersRouter = require('./users/users-router')
+const profilesRouter = require('./profiles/profiles-router')
+const conversationsRouter = require('./conversations/conversations-router')
+const messagesRouter = require('./messages/messages-router')
 
 const app = express()
 
@@ -25,6 +28,9 @@ app.use(
 
 app.use('/api/auth', authRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/profiles', profilesRouter)
+app.use('/api/conversations', conversationsRouter)
+app.use('/api/messages', messagesRouter)
 
 app.use(function errorHandler(error, req, res, next) {
   let response

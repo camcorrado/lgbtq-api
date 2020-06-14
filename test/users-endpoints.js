@@ -115,14 +115,14 @@ describe('Users Endpoints', function() {
 
                 it(`responds 400 'Email already taken' when email isn't unique`, () => {
                     const duplicateUser = {
-                    email: testUser.email,
-                    password: '11AAaa!!',
-                    full_name: 'test full_name',
+                        email: testUser.email,
+                        password: '11AAaa!!',
+                        full_name: 'test full_name',
                     }
                     return supertest(app)
-                    .post('/api/users')
-                    .send(duplicateUser)
-                    .expect(400, { error: `Email already taken` })
+                        .post('/api/users')
+                        .send(duplicateUser)
+                        .expect(400, { error: `Email already taken` })
                 })
             })
 
@@ -168,6 +168,121 @@ describe('Users Endpoints', function() {
                                 })
                             )
                 })
+            })
+        })
+    })
+
+    describe(`PATCH /api/users`, () => {
+        context('Given there are users in the database', () => {
+            beforeEach('insert users', () => 
+                helpers.seedUsers(
+                    db,
+                    testUsers,
+                )
+            )
+
+            const requiredFields = ['full_name', 'password']
+
+            requiredFields.forEach(field => {
+                const registerAttemptBody = {
+                    full_name: 'test full_name',
+                    password: 'Password123!',
+                    ...testUser
+                }
+            
+
+                it(`responds with 400 required error when '${field}' is missing`, () => {
+                    delete registerAttemptBody[field]
+
+                    return supertest(app)
+                        .patch(`/api/users`)
+                        .send(registerAttemptBody)
+                        .expect(400, { error: `Missing '${field}' in request body` })
+                })
+            })
+
+            it(`responds 400 'Password must be longer than 8 characters' when empty password`, () => {
+                const userShortPassword = {
+                    full_name: 'test full_name',
+                    password: '1234567',
+                }
+                return supertest(app)
+                    .patch(`/api/users`)
+                    .send(userShortPassword)
+                    .expect(400, { error: `Password must be longer than 8 characters` })
+            })
+
+            it(`responds 400 'Password must be less than 72 characters' when long password`, () => {
+                const userLongPassword = {
+                    full_name: 'test full_name',
+                    password: '*'.repeat(73),
+                }
+
+                return supertest(app)
+                    .patch(`/api/users`)
+                    .send(userLongPassword)
+                    .expect(400, {error: `Password must be less than 72 characters`})
+            })
+
+            it(`responds 400 error when password starts with spaces`, () => {
+                const userPasswordStartsSpaces = {
+                    full_name: 'test full_name',
+                    password: ' 1Aa!2Bb@',
+                }
+                return supertest(app)
+                    .patch(`/api/users`)
+                    .send(userPasswordStartsSpaces)
+                    .expect(400, { error: `Password must not start or end with empty spaces` })
+            })
+
+            it(`responds 400 error when password ends with spaces`, () => {
+                const userPasswordEndsSpaces = {
+                    full_name: 'test full_name',
+                    password: '1Aa!2Bb@ ',
+                }
+                return supertest(app)
+                    .patch(`/api/users`)
+                    .send(userPasswordEndsSpaces)
+                    .expect(400, { error: `Password must not start or end with empty spaces` })
+            })
+
+            it(`responds 400 error when password isn't complex enough`, () => {
+                const userPasswordNotComplex = {
+                    full_name: 'test full_name',
+                    password: '11AAaabb',
+                }
+                return supertest(app)
+                    .patch(`/api/users`)
+                    .send(userPasswordNotComplex)
+                    .expect(400, { error: `Password must contain 1 upper case, lower case, number and special character` })
+            })
+  
+            it('responds with 204 and updates the user', () => {
+                const updatedUser = {
+                    full_name: 'John Updated',
+                    password: 'Password123!',
+                    ...testUser
+                }
+
+                return supertest(app)
+                    .patch(`/api/users`)
+                    .send(updatedUser)
+                    .expect(204)
+            })
+  
+            it(`responds with 204 when updating only a subset of fields`, () => {
+                const updatedUser = {
+                    full_name: 'John Updated',
+                    ...testUser
+                }
+    
+                return supertest(app)
+                    .patch(`/api/users`)
+                    .send({
+                        ...updatedUser,
+                        fieldToIgnore: 'should not be in GET response'
+                    })
+                    .expect(204)
             })
         })
     })

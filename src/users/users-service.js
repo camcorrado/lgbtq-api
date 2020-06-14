@@ -3,18 +3,11 @@ const xss = require('xss')
 const bcrypt = require('bcryptjs')
 
 const UsersService = {
-    hasUserWithEmail(db, email) {
-        return db('lgbtq_users')
+    hasUserWithEmail(knex, email) {
+        return knex.from('lgbtq_users')
         .where({ email })
         .first()
         .then(user => !!user)
-    },
-    insertUser(db, newUser) {
-        return db
-        .insert(newUser)
-        .into('lgbtq_users')
-        .returning('*')
-        .then(([user]) => user)
     },
     validatePassword(password) {
         if (password.length < 8) {
@@ -42,6 +35,28 @@ const UsersService = {
             date_created: new Date(user.date_created)
         }
     },
-  }
+    insertUser(knex, newUser) {
+        return knex
+        .insert(newUser)
+        .into('lgbtq_users')
+        .returning('*')
+        .then(rows => {
+            return rows[0]
+        })
+    },
+    getById(knex, id) {
+        return knex.from('lgbtq_users').select('*').where('id', id).first()
+    },
+    updateUser(knex, id, newUserFields) {
+        return knex('lgbtq_users')
+        .where({ id })
+        .update(newUserFields)
+    },
+    deleteUser(knex, id) {
+        return knex('lgbtq_users')
+        .where({ id })
+        .delete()
+    },
+}
   
   module.exports = UsersService

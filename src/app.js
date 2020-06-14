@@ -11,6 +11,7 @@ const conversationsRouter = require('./conversations/conversations-router')
 const messagesRouter = require('./messages/messages-router')
 
 const app = express()
+app.use(express.json())
 
 const morganOption = (NODE_ENV === 'production')
   ? 'tiny'

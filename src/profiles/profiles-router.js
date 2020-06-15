@@ -18,12 +18,12 @@ profilesRouter
 		const { username, bio, profile_pic, interests, pronouns, zipcode } = req.body
 		const newProfile = { username, bio, profile_pic, interests, pronouns, zipcode }
 
-		for (const [key, value] of Object.entries(newProfile))
-			if (value == null)
-				return res.status(400).json({
-					error: `Missing '${key}' in request body`
-				})
-
+		for (const [key, value] of Object.entries(newProfile)) {
+            if (value == null) {
+                return res.status(400).json({ error: `Missing '${key}' in request body` })
+            }	
+        }
+			
 		newProfile.user_id = req.user.id
 
 		ProfilesService.insertProfile(
@@ -32,57 +32,53 @@ profilesRouter
 		)
 			.then(profile => {
 				res
-				.status(201)
-				.location(path.posix.join(req.originalUrl, `/${profile.id}`))
-				.json(ProfilesService.serializeProfile(profile))
+                    .status(201)
+                    .location(path.posix.join(req.originalUrl, `/${profile.id}`))
+                    .json(ProfilesService.serializeProfile(profile))
 			})
 			.catch(next)
-			})
+	})
 
-	profilesRouter
-		.route('/:profile_id')
-		.all(checkProfileExists)
-		.get((req, res) => {
-			res.json(ProfilesService.serializeProfile(res.profile))
-		})
-		.patch(requireAuth, (req, res, next) => {
-			const { username, bio, profile_pic, interests, pronouns, zipcode } = req.body
-			const profileToUpdate = { username, bio, profile_pic, interests, pronouns, zipcode }
-	
-			const numberOfValues = Object.values(profileToUpdate).filter(Boolean).length
-			if (numberOfValues === 0)
-				return res.status(400).json({
-					error: {
-						message: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode'`
-					}
-				})
-	
-			ProfilesService.updateProfile(
-				req.app.get('db'),
-				req.params.profile_id,
-				profileToUpdate
-			)
-				.then(()=>res.status(204).end())
-				.catch(next)
-	  })
+profilesRouter
+    .route('/:profile_id')
+    .all(checkProfileExists)
+    .get((req, res) => {
+        res.json(ProfilesService.serializeProfile(res.profile))
+    })
+    .patch(requireAuth, (req, res, next) => {
+        const { username, bio, profile_pic, interests, pronouns, zipcode } = req.body
+        const profileToUpdate = { username, bio, profile_pic, interests, pronouns, zipcode }
 
-	async function checkProfileExists(req, res, next) {
-	try {
-		const profile = await ProfilesService.getById(
-			req.app.get('db'),
-			req.params.profile_id
-		)
+        const numberOfValues = Object.values(profileToUpdate).filter(Boolean).length
+        if (numberOfValues === 0) {
+            return res.status(400).json({ error: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode'` })
+        }   
 
-		if (!profile)
-			return res.status(404).json({
-				error: `Profile doesn't exist`
-			})
+        ProfilesService.updateProfile(
+            req.app.get('db'),
+            req.params.profile_id,
+            profileToUpdate
+        )
+            .then(()=>res.status(204).end())
+            .catch(next)
+    })
 
-		res.profile = profile
-		next()
-	} catch (error) {
-		next(error)
-	}
+async function checkProfileExists(req, res, next) {
+    try {
+        const profile = await ProfilesService.getById(
+            req.app.get('db'),
+            req.params.profile_id
+        )
+
+        if (!profile) {
+            return res.status(404).json({ error: `Profile doesn't exist` })
+        }
+
+        res.profile = profile
+        next()
+    } catch (error) {
+        next(error)
+    }
 }
 
 module.exports = profilesRouter

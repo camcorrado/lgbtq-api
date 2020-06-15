@@ -1,6 +1,6 @@
+const ConversationsService = require('./conversations-service')
 const express = require('express')
 const path = require('path')
-const ConversationsService = require('./conversations-service')
 const { requireAuth } = require('../middleware/jwt-auth')
 
 const conversationsRouter = express.Router()
@@ -14,16 +14,16 @@ conversationsRouter
 			})
 			.catch(next)
 	})
-  .post(requireAuth, (req, res, next) => {
+    .post(requireAuth, (req, res, next) => {
 		const { users } = req.body
-		const newConversation = { users }
-		console.log(newConversation)
-		for (const [key, value] of Object.entries(newConversation))
-			if (value == null)
-				return res.status(400).json({
-					error: `Missing '${key}' in request body`
-				})
-
+        const newConversation = { users }
+        
+		for (const [key, value] of Object.entries(newConversation)) {
+            if (value == null) {
+                return res.status(400).json({ error: `Missing '${key}' in request body` })
+            }	
+        }
+			
 		ConversationsService.insertConversation(
 			req.app.get('db'),
 			newConversation
@@ -42,7 +42,7 @@ conversationsRouter
 		.all(checkConversationExists)
 		.get((req, res) => {
 			res.json(ConversationsService.serializeConversation(res.conversation))
-	})
+	    })
 
 async function checkConversationExists(req, res, next) {
 	try {
@@ -51,11 +51,10 @@ async function checkConversationExists(req, res, next) {
 			req.params.conversation_id
 		)
 
-		if (!conversation)
-			return res.status(404).json({
-				error: `Conversation doesn't exist`
-			})
-
+		if (!conversation) {
+            return res.status(404).json({ error: `Conversation doesn't exist` })
+        }
+			
 		res.conversation = conversation
 		next()
 	} catch (error) {

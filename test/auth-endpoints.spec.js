@@ -1,7 +1,7 @@
-const knex = require('knex')
-const jwt = require('jsonwebtoken')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
+const jwt = require('jsonwebtoken')
+const knex = require('knex')
 
 describe('Auth Endpoints', function() {
     let db
@@ -46,9 +46,7 @@ describe('Auth Endpoints', function() {
                 return supertest(app)
                     .post('/api/auth/login')
                     .send(loginAttemptBody)
-                    .expect(400, {
-                        error: `Missing '${field}' in request body`, 
-                    })
+                    .expect(400, { error: `Missing '${field}' in request body`, })
             })
         })
 

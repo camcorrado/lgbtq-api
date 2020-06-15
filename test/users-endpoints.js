@@ -1,7 +1,8 @@
-const knex = require('knex')
 const app = require('../src/app')
-const helpers = require('./test-helpers')
 const bcrypt = require('bcryptjs')
+const helpers = require('./test-helpers')
+const knex = require('knex')
+const moment = require('moment')
 
 describe('Users Endpoints', function() {
     let db
@@ -47,9 +48,7 @@ describe('Users Endpoints', function() {
                     return supertest(app)
                         .post('/api/users')
                         .send(registerAttemptBody)
-                        .expect(400, {
-                            error: `Missing '${field}' in request body`,
-                        })
+                        .expect(400, { error: `Missing '${field}' in request body` })
                 })
 
                 it(`responds 400 'Password must be longer than 8 characters' when empty password`, () => {
@@ -58,6 +57,7 @@ describe('Users Endpoints', function() {
                         email: 'test email',
                         password: '1234567',
                     }
+
                     return supertest(app)
                         .post('/api/users')
                         .send(userShortPassword)
@@ -83,6 +83,7 @@ describe('Users Endpoints', function() {
                         email: 'test email',
                         password: ' 1Aa!2Bb@',
                     }
+
                     return supertest(app)
                         .post('/api/users')
                         .send(userPasswordStartsSpaces)
@@ -95,6 +96,7 @@ describe('Users Endpoints', function() {
                         email: 'test email',
                         password: '1Aa!2Bb@ ',
                     }
+
                     return supertest(app)
                         .post('/api/users')
                         .send(userPasswordEndsSpaces)
@@ -107,6 +109,7 @@ describe('Users Endpoints', function() {
                         email: 'test email',
                         password: '11AAaabb',
                     }
+
                     return supertest(app)
                         .post('/api/users')
                         .send(userPasswordNotComplex)
@@ -119,6 +122,7 @@ describe('Users Endpoints', function() {
                         password: '11AAaa!!',
                         full_name: 'test full_name',
                     }
+
                     return supertest(app)
                         .post('/api/users')
                         .send(duplicateUser)
@@ -143,30 +147,28 @@ describe('Users Endpoints', function() {
                             expect(res.body.full_name).to.eql(newUser.full_name)
                             expect(res.body).to.not.have.property('password')
                             expect(res.headers.location).to.eql(`/api/users/${res.body.id}`)
-                            const expectedDate = new Date().toLocaleString('en', { timeZone: 'UTC' })
-                            const actualDate = new Date(res.body.date_created).toLocaleString()
+                            const expectedDate = moment(new Date()).format('ddd MMM DD YYYY')
+                            const actualDate = moment(new Date(res.body.date_created)).format('ddd MMM DD YYYY')
                             expect(actualDate).to.eql(expectedDate)
                         })
-                        .expect(res =>
-                            db
-                                .from('lgbtq_users')
-                                .select('*')
-                                .where({ id: res.body.id })
-                                .first()
-                                .then(row => {
-                                    expect(row.email).to.eql(newUser.email)
-                                    expect(row.full_name).to.eql(newUser.full_name)
-                                    const expectedDate = new Date().toLocaleString('en', { timeZone: 'UTC' })
-                                    const actualDate = new Date(row.date_created).toLocaleString()
-                                    expect(actualDate).to.eql(expectedDate)
+                        .expect(res => db
+                            .from('users')
+                            .select('*')
+                            .where({ id: res.body.id })
+                            .first()
+                            .then(row => {
+                                expect(row.email).to.eql(newUser.email)
+                                expect(row.full_name).to.eql(newUser.full_name)
+                                const expectedDate = moment(new Date()).format('ddd MMM DD YYYY')
+                                const actualDate = moment(new Date(res.body.date_created)).format('ddd MMM DD YYYY')
+                                expect(actualDate).to.eql(expectedDate)
 
-                                    return bcrypt.compare(newUser.password, row.password)
-
-                                })
-                                .then(compareMatch => {
-                                    expect(compareMatch).to.be.true
-                                })
-                            )
+                                return bcrypt.compare(newUser.password, row.password)
+                            })
+                            .then(compareMatch => {
+                                expect(compareMatch).to.be.true
+                            })
+                        )
                 })
             })
         })
@@ -206,6 +208,7 @@ describe('Users Endpoints', function() {
                     full_name: 'test full_name',
                     password: '1234567',
                 }
+
                 return supertest(app)
                     .patch(`/api/users`)
                     .send(userShortPassword)
@@ -229,6 +232,7 @@ describe('Users Endpoints', function() {
                     full_name: 'test full_name',
                     password: ' 1Aa!2Bb@',
                 }
+
                 return supertest(app)
                     .patch(`/api/users`)
                     .send(userPasswordStartsSpaces)
@@ -240,6 +244,7 @@ describe('Users Endpoints', function() {
                     full_name: 'test full_name',
                     password: '1Aa!2Bb@ ',
                 }
+
                 return supertest(app)
                     .patch(`/api/users`)
                     .send(userPasswordEndsSpaces)
@@ -251,6 +256,7 @@ describe('Users Endpoints', function() {
                     full_name: 'test full_name',
                     password: '11AAaabb',
                 }
+                
                 return supertest(app)
                     .patch(`/api/users`)
                     .send(userPasswordNotComplex)

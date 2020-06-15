@@ -1,6 +1,7 @@
-const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
+const knex = require('knex')
+const moment = require('moment')
 
 describe('Conversations Endpoints', function() {
     let db
@@ -120,20 +121,19 @@ describe('Conversations Endpoints', function() {
                     expect(res.body).to.have.property('id')
                     expect(res.body.users).to.eql(newConversation.users)
                     expect(res.headers.location).to.eql(`/api/conversations/${res.body.id}`)
-                    const expectedDate = new Date().toLocaleString('en', { timeZone: 'UTC' })
-                    const actualDate = new Date(res.body.date_created).toLocaleString()
+                    const expectedDate = moment(new Date()).format('ddd MMM DD YYYY')
+                    const actualDate = moment(new Date(res.body.date_created)).format('ddd MMM DD YYYY')
                     expect(actualDate).to.eql(expectedDate)
                 })
-                .expect(res =>
-                db
-                    .from('lgbtq_conversations')
+                .expect(res => db
+                    .from('conversations')
                     .select('*')
                     .where({ id: res.body.id })
                     .first()
                     .then(row => {
                         expect(row.users).to.eql(newConversation.users)
-                        const expectedDate = new Date().toLocaleString('en', { timeZone: 'UTC' })
-                        const actualDate = new Date(row.date_created).toLocaleString()
+                        const expectedDate = moment(new Date()).format('ddd MMM DD YYYY')
+                        const actualDate = moment(new Date(row.date_created)).format('ddd MMM DD YYYY')
                         expect(actualDate).to.eql(expectedDate)
                     })
                 )
@@ -142,21 +142,19 @@ describe('Conversations Endpoints', function() {
         const requiredFields = ['users']
 
         requiredFields.forEach(field => {
-        const newConversation = {
-            users: 'Test new users',
-        }
+            const newConversation = {
+                users: 'Test new users',
+            }
 
-        it(`responds with 400 and an error message when the '${field}' is missing`, () => {
-            delete newConversation[field]
+            it(`responds with 400 and an error message when the '${field}' is missing`, () => {
+                delete newConversation[field]
 
-            return supertest(app)
-                .post('/api/conversations')
-                .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-                .send(newConversation)
-                .expect(400, {
-                    error: `Missing '${field}' in request body`,
-                })
-        })
+                return supertest(app)
+                    .post('/api/conversations')
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                    .send(newConversation)
+                    .expect(400, { error: `Missing '${field}' in request body` })
+            })
         })
     })
 })

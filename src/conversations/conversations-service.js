@@ -1,15 +1,16 @@
+const moment = require('moment')
+
 const ConversationsService = {
     getAllConversations(knex) {
-        return knex.select('*').from('lgbtq_conversations')
+        return knex.select('*').from('conversations')
     },
-
     getById(knex, id) {
-        return knex.from('lgbtq_conversations').select('*').where('id', id).first()
+        return knex.from('conversations').select('*').where('id', id).first()
     },
     insertConversation(knex, newConversation) {
         return knex
 			.insert(newConversation)
-			.into('lgbtq_conversations')
+			.into('conversations')
 			.returning('*')
 			.then(rows => {
 				return rows[0]
@@ -19,7 +20,7 @@ const ConversationsService = {
         return {
             id: conversation.id,
             users: conversation.users,
-            date_created: new Date(conversation.date_created),
+            date_created: moment(new Date(conversation.date_created)).format('ddd MMM DD YYYY'),
         }
     },
 }

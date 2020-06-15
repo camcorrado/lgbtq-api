@@ -16,25 +16,28 @@ messagesRouter
 	})
 	.post(requireAuth, (req, res, next) => {
 		const { content } = req.body
-		const newMessage = { content }
+        const newMessage = { content }
 
-		for (const [key, value] of Object.entries(newMessage))
-			if (value == null)
-				return res.status(400).json({ error: `Missing '${key}' in request body` })
+		for (const [key, value] of Object.entries(newMessage)) {
+            if (value == null) {
+                return res.status(400).json({ error: `Missing '${key}' in request body` })
+            }
+        }
 
-		newMessage.user_id = req.user.id
+        newMessage.user_id = req.user.id
+        newMessage.conversation_id = req.body.conversation_id
 
 		MessagesService.insertMessage(
 			req.app.get('db'),
 			newMessage
 		)
-		.then(message => {
-			res
-				.status(201)
-				.location(path.posix.join(req.originalUrl, `/${message.id}`))
-				.json(MessagesService.serializeMessage(message))
-		})
-		.catch(next)
+            .then(message => {
+                res
+                    .status(201)
+                    .location(path.posix.join(req.originalUrl, `/${message.id}`))
+                    .json(MessagesService.serializeMessage(message))
+            })
+            .catch(next)
 	})
 
 messagesRouter
@@ -52,11 +55,10 @@ async function checkMessageExists(req, res, next) {
 			req.params.message_id
 		)
 
-		if (!message)
-			return res.status(404).json({
-				error: `Message doesn't exist`
-			})
-
+		if (!message) {
+            return res.status(404).json({ error: `Message doesn't exist` })
+        }
+			
 		res.message = message
 		next()
 	} catch (error) {

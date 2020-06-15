@@ -48,6 +48,7 @@ describe('Profiles Endpoints', function() {
                         profile
                     )
                 )
+
                 return supertest(app)
                     .get('/api/profiles')
                     .expect(200, expectedProfiles)
@@ -184,21 +185,20 @@ describe('Profiles Endpoints', function() {
                     expect(res.body.zipcode).to.eql(newProfile.zipcode)
                     expect(res.headers.location).to.eql(`/api/profiles/${res.body.id}`)
                 })
-                .expect(res =>
-                    db
-                        .from('lgbtq_profiles')
-                        .select('*')
-                        .where({ id: res.body.id })
-                        .first()
-                        .then(row => {
-                            expect(row.user_id).to.eql(newProfile.user_id)
-                            expect(row.username).to.eql(newProfile.username)
-                            expect(row.bio).to.eql(newProfile.bio)
-                            expect(row.profile_pic).to.eql(newProfile.profile_pic)
-                            expect(row.interests).to.eql(newProfile.interests)
-                            expect(row.pronouns).to.eql(newProfile.pronouns)
-                            expect(row.zipcode).to.eql(newProfile.zipcode)
-                        })
+                .expect(res => db
+                    .from('profiles')
+                    .select('*')
+                    .where({ id: res.body.id })
+                    .first()
+                    .then(row => {
+                        expect(row.user_id).to.eql(newProfile.user_id)
+                        expect(row.username).to.eql(newProfile.username)
+                        expect(row.bio).to.eql(newProfile.bio)
+                        expect(row.profile_pic).to.eql(newProfile.profile_pic)
+                        expect(row.interests).to.eql(newProfile.interests)
+                        expect(row.pronouns).to.eql(newProfile.pronouns)
+                        expect(row.zipcode).to.eql(newProfile.zipcode)
+                    })
                 )
         })
 
@@ -229,8 +229,6 @@ describe('Profiles Endpoints', function() {
 
     describe(`PATCH /api/profiles/:profile_id`, () => {
         context('Given there are profiles in the database', () => {
-            
-
             beforeEach('insert profiles', () =>
                 helpers.seedProfiles(
                     db,
@@ -260,8 +258,8 @@ describe('Profiles Endpoints', function() {
                     .expect(204)
                     .then(res =>
                         supertest(app)
-                        .get(`/api/profiles/${idToUpdate}`)
-                        .expect(expectedProfile)
+                            .get(`/api/profiles/${idToUpdate}`)
+                            .expect(expectedProfile)
                     )
             })
 
@@ -271,11 +269,7 @@ describe('Profiles Endpoints', function() {
                     .patch(`/api/profiles/${idToUpdate}`)
                     .set('Authorization', helpers.makeAuthHeader(testUsers[idToUpdate - 1]))
                     .send({ irrelevantField: 'foo' })
-                    .expect(400, {
-                        error: {
-                            message: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode'`
-                        }
-                    })
+                    .expect(400, { error: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode'` })
             })
 
             it(`responds with 204 when updating only a subset of fields`, () => {
@@ -299,8 +293,8 @@ describe('Profiles Endpoints', function() {
                     .expect(204)
                     .then(res =>
                         supertest(app)
-                        .get(`/api/profiles/${idToUpdate}`)
-                        .expect(expectedProfile)
+                            .get(`/api/profiles/${idToUpdate}`)
+                            .expect(expectedProfile)
                     )
             })
         })

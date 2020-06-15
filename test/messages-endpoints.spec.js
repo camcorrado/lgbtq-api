@@ -1,8 +1,9 @@
-const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
+const knex = require('knex')
+const moment = require('moment')
 
-describe.only('Messages Endpoints', function() {
+describe('Messages Endpoints', function() {
     let db
 
     const {
@@ -67,9 +68,9 @@ describe.only('Messages Endpoints', function() {
             beforeEach('insert malicious message', () => {
                 return helpers.seedMaliciousMessage(
                     db,
+                    testUser,
                     testConversation,
-                    maliciousMessage,
-                    testUser
+                    maliciousMessage
                 )
             })
 
@@ -134,10 +135,10 @@ describe.only('Messages Endpoints', function() {
                 maliciousMessage,
                 expectedMessage,
             } = helpers.makeMaliciousMessage(testConversation, testUser)
-
             beforeEach('insert malicious message', () => {
                 return helpers.seedMaliciousMessage(
                     db,
+                    testUser,
                     testConversation,
                     maliciousMessage,
                 )
@@ -165,12 +166,12 @@ describe.only('Messages Endpoints', function() {
             )
         )
 
-        it(`creates a messages, responding with 201 and the new messages`, function() {
+        it(`creates a messages, responding with 201 and the new message`, function() {
             const testUser = testUsers[0]
             const testConversation = testConversations[0]
             const newMessage = {
-                user_id: testUser.id,
                 conversation_id: testConversation.id,
+                user_id: testUser.id,
                 content: 'test content',
             }
         return supertest(app)
@@ -183,13 +184,12 @@ describe.only('Messages Endpoints', function() {
                 expect(res.body.user_id).to.eql(newMessage.user_id)
                 expect(res.body.conversation_id).to.eql(newMessage.conversation_id)
                 expect(res.body.content).to.eql(newMessage.content)
-                const expectedDate = new Date().toLocaleString('en', { timeZone: 'UTC' })
-                const actualDate = new Date(res.body.date_created).toLocaleString()
+                const expectedDate = moment(new Date()).format('ddd MMM DD YYYY')
+                const actualDate = moment(new Date(res.body.date_created)).format('ddd MMM DD YYYY')
                 expect(actualDate).to.eql(expectedDate)
             })
-            .expect(res =>
-            db
-                .from('lgbtq_messages')
+            .expect(res => db
+                .from('messages')
                 .select('*')
                 .where({ id: res.body.id })
                 .first()
@@ -198,8 +198,8 @@ describe.only('Messages Endpoints', function() {
                     expect(row.user_id).to.eql(newMessage.user_id)
                     expect(row.conversation_id).to.eql(newMessage.conversation_id)
                     expect(row.content).to.eql(newMessage.content)
-                    const expectedDate = new Date().toLocaleString('en', { timeZone: 'UTC' })
-                    const actualDate = new Date(row.date_created).toLocaleString()
+                    const expectedDate = moment(new Date()).format('ddd MMM DD YYYY')
+                    const actualDate = moment(new Date(res.body.date_created)).format('ddd MMM DD YYYY')
                     expect(actualDate).to.eql(expectedDate)
                 })
             )
@@ -219,9 +219,7 @@ describe.only('Messages Endpoints', function() {
                     .post('/api/messages')
                     .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .send(newMessage)
-                    .expect(400, {
-                        error: `Missing '${field}' in request body`,
-                    })
+                    .expect(400, { error: `Missing '${field}' in request body`, })
             })
         })
     })

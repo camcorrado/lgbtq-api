@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const moment = require('moment')
 
 function makeFixtures() {
     const testUsers = makeUsersArray()
@@ -16,28 +17,28 @@ function makeUsersArray() {
             full_name: 'Test user 1',
             email: 'TU1@gmail.com',
             password: 'Password1!',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
         {
             id: 2,
             full_name: 'Test user 2',
             email: 'TU2@gmail.com',
             password: 'Password2!',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
         {
             id: 3,
             full_name: 'Test user 3',
             email: 'TU3@gmail.com',
             password: 'Password3!',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
         {
             id: 4,
             full_name: 'Test user 4',
             email: 'TU4@gmail.com',
             password: 'Password4!',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
     ]
 }
@@ -92,22 +93,22 @@ function makeConversationsArray() {
         {
             id: 1,
             users: '1, 2',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
         {
             id: 2,
             users: '1, 3',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
         {
             id: 3,
             users: '1, 2, 3',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
         {
             id: 4,
             users: '4, 2',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
     ]
 }
@@ -119,28 +120,28 @@ function makeMessagesArray(users, conversations) {
             conversation_id: conversations[0].id,
             user_id: users[0].id,
             content: 'Hi',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
         {
             id: 2,
             conversation_id: conversations[1].id,
             user_id: users[1].id,
             content: 'Hi',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
         {
             id: 3,
             conversation_id: conversations[2].id,
             user_id: users[2].id,
             content: 'Hi',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
         {
             id: 4,
             conversation_id: conversations[3].id,
             user_id: users[3].id,
             content: 'Hi',
-            date_created: new Date('2029-01-22T16:28:32.615Z')
+            date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY')
         },
     ]
 }
@@ -149,10 +150,10 @@ function cleanTables(db) {
     return db.transaction(trx =>
         trx.raw(
             `TRUNCATE
-                lgbtq_users,
-                lgbtq_profiles,
-                lgbtq_conversations,
-                lgbtq_messages
+                users,
+                profiles,
+                conversations,
+                messages
             `
         )
     )
@@ -163,10 +164,10 @@ function seedUsers(db, users) {
         ...user,
         password: bcrypt.hashSync(user.password, 1)
     }))
-    return db.into('lgbtq_users').insert(preppedUsers)
+    return db.into('users').insert(preppedUsers)
         .then(() =>
             db.raw(
-                `SELECT setval('lgbtq_users_id_seq', ?)`,
+                `SELECT setval('users_id_seq', ?)`,
                 [users[users.length - 1].id],
             )
         )
@@ -175,9 +176,9 @@ function seedUsers(db, users) {
 function seedProfiles(db, users, profiles) {
     return db.transaction(async trx => {
         await seedUsers(trx, users)
-        await trx.into('lgbtq_profiles').insert(profiles)
+        await trx.into('profiles').insert(profiles)
         await trx.raw(
-            `SELECT setval('lgbtq_profiles_id_seq', ?)`,
+            `SELECT setval('profiles_id_seq', ?)`,
             [profiles[profiles.length - 1].id],
         )
     })
@@ -185,9 +186,9 @@ function seedProfiles(db, users, profiles) {
 
 function seedConversations(db, conversations) {
     return db.transaction(async trx => {
-        await trx.into('lgbtq_conversations').insert(conversations)
+        await trx.into('conversations').insert(conversations)
         await trx.raw(
-            `SELECT setval('lgbtq_profiles_id_seq', ?)`,
+            `SELECT setval('profiles_id_seq', ?)`,
             [conversations[conversations.length - 1].id],
         )
     })
@@ -197,9 +198,9 @@ function seedMessages(db, users, conversations, messages) {
     return db.transaction(async trx => {
         await seedUsers(trx, users)
         await seedConversations(trx, conversations)
-        await trx.into('lgbtq_messages').insert(messages)
+        await trx.into('messages').insert(messages)
         await trx.raw(
-            `SELECT setval('lgbtq_messages_id_seq', ?)`,
+            `SELECT setval('messages_id_seq', ?)`,
             [messages[messages.length - 1].id],
         )
     })
@@ -222,7 +223,7 @@ function makeExpectedConversation(conversation) {
     return {
         id: conversation.id,
         users: conversation.users,
-        date_created: conversation.date_created.toISOString(),
+        date_created: moment(conversation.date_created).format('ddd MMM DD YYYY'),
     }
 }
 
@@ -232,7 +233,7 @@ function makeExpectedMessage(message) {
         conversation_id: message.conversation_id,
         user_id: message.user_id,
         content: message.content,
-        date_created: message.date_created.toISOString(),
+        date_created: moment(message.date_created).format('ddd MMM DD YYYY'),
     }
 }
 
@@ -248,7 +249,7 @@ function makeMaliciousProfile(user) {
         zipcode: 66666
     }
     const expectedProfile = {
-        ...makeExpectedProfile([user], maliciousProfile),
+        ...maliciousProfile,
         username: 'Bad Guy',
         bio: `mwahahaha`,
         profile_pic: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
@@ -267,10 +268,10 @@ function makeMaliciousMessage(conversation, user) {
         conversation_id: conversation.id,
         user_id: user.id,
         content: 'Naughty naughty very naughty <script>alert("xss");</script>',
-        date_created: new Date('2029-01-22T16:28:32.615Z'),
+        date_created: moment(new Date('2029-01-22T16:28:32.615Z')).format('ddd MMM DD YYYY'),
     }
     const expectedMessage = {
-        ...makeExpectedMessage([conversation], maliciousMessage),
+        ...maliciousMessage,
         content: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
     }
     return {
@@ -283,16 +284,21 @@ function seedMaliciousProfile(db, user, profile) {
     return seedUsers(db, [user])
         .then(() =>
             db
-                .into('lgbtq_profiles')
+                .into('profiles')
                 .insert([profile])
         )
 }
 
-function seedMaliciousMessage(db, conversation, message) {
+function seedMaliciousMessage(db, user, conversation, message) {
     return seedConversations(db, [conversation])
         .then(() =>
+                db
+                    .into('users')
+                    .insert([user])
+            )
+        .then(() =>
             db
-                .into('lgbtq_messages')
+                .into('messages')
                 .insert([message])
         )
 }

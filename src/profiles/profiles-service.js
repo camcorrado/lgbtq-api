@@ -2,25 +2,25 @@ const xss = require('xss')
 
 const ProfilesService = {
   	getAllProfiles(knex) {
-    	return knex.select('*').from('lgbtq_profiles')
+    	return knex.select('*').from('profiles')
 	},
 	getById(knex, id) {
-		return knex.from('lgbtq_profiles').select('*').where('id', id).first()
+		return knex.from('profiles').select('*').where('id', id).first()
 	},
 	getProfileForUser(knex, id) {
-		return knex.from('lgbtq_profiles').select('*').where('user_id', id)
+		return knex.from('profiles').select('*').where('user_id', id)
 	},
 	insertProfile(knex, newProfile) {
 		return knex
 			.insert(newProfile)
-			.into('lgbtq_profiles')
+			.into('profiles')
 			.returning('*')
 			.then(rows => {
 				return rows[0]
-		})
+		    })
 	},
 	updateProfile(knex, id, newProfileFields) {
-        return knex('lgbtq_profiles')
+        return knex('profiles')
             .where({ id })
             .update(newProfileFields)
     },

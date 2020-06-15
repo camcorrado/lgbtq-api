@@ -18,8 +18,10 @@ function requireAuth(req, res, next) {
             payload.sub,
         )
             .then(user => {
-                if (!user)
-                return res.status(401).json({ error: 'Missing bearer token' })
+                if (!user) {
+                    return res.status(401).json({ error: 'Missing bearer token' })
+                }
+                
                 req.user = user
                 next()
             })
@@ -30,8 +32,6 @@ function requireAuth(req, res, next) {
     } catch(error) {
         res.status(401).json({ error: 'Missing bearer token' })
     }
-  }
+}
   
-  module.exports = {
-    requireAuth,
-  }
+module.exports = { requireAuth }

@@ -1,13 +1,14 @@
-const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
-const xss = require('xss')
 const bcrypt = require('bcryptjs')
+const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
+const moment = require('moment')
+const xss = require('xss')
 
 const UsersService = {
     hasUserWithEmail(knex, email) {
-        return knex.from('lgbtq_users')
-        .where({ email })
-        .first()
-        .then(user => !!user)
+        return knex.from('users')
+            .where({ email })
+            .first()
+            .then(user => !!user)
     },
     validatePassword(password) {
         if (password.length < 8) {
@@ -32,30 +33,30 @@ const UsersService = {
             id: user.id,
             full_name: xss(user.full_name),
             email: xss(user.email),
-            date_created: new Date(user.date_created)
+            date_created: moment(new Date(user.date_created)).format('ddd MMM DD YYYY')
         }
     },
     insertUser(knex, newUser) {
         return knex
-        .insert(newUser)
-        .into('lgbtq_users')
-        .returning('*')
-        .then(rows => {
-            return rows[0]
-        })
+            .insert(newUser)
+            .into('users')
+            .returning('*')
+            .then(rows => {
+                return rows[0]
+            })
     },
     getById(knex, id) {
-        return knex.from('lgbtq_users').select('*').where('id', id).first()
+        return knex.from('users').select('*').where('id', id).first()
     },
     updateUser(knex, id, newUserFields) {
-        return knex('lgbtq_users')
-        .where({ id })
-        .update(newUserFields)
+        return knex('users')
+            .where({ id })
+            .update(newUserFields)
     },
     deleteUser(knex, id) {
-        return knex('lgbtq_users')
-        .where({ id })
-        .delete()
+        return knex('users')
+            .where({ id })
+            .delete()
     },
 }
   

@@ -23,13 +23,6 @@ app.use(
     })
 )
 
-db = knex({
-    client: 'pg',
-    connection: DATABASE_URL,
-  });
-
-  app.set('db',db);
-
 app.use(express.json())
 app.use(morgan(morganOption))
 app.use(helmet())

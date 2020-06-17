@@ -46,7 +46,7 @@ app.use(function errorHandler(error, req, res, next) {
     } else {
         response = { error }
     }
-    console.log(response);
+    console.log(error);
     res.status(500).json(response)
 })
 

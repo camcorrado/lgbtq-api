@@ -12,7 +12,7 @@ const knex = require('knex');
 require('dotenv').config()
 
 const app = express()
-const {CLIENT_ORIGIN, DATABASE_URL} = require('./config')
+const {CLIENT_ORIGIN} = require('./config')
 const morganOption = (NODE_ENV === 'production')
     ? 'tiny'
     : 'common'

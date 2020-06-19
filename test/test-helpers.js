@@ -206,6 +206,15 @@ function seedMessages(db, users, conversations, messages) {
     })
 }
 
+function makeExpectedUser(user) {
+    return {
+        id: user.id,
+        full_name: user.full_name,
+        email: user.email,
+        date_created: moment(user.date_created).format('ddd MMM DD YYYY'),
+    }
+}
+
 function makeExpectedProfile(profile) {
     return {
         id: profile.id,
@@ -330,4 +339,5 @@ module.exports = {
     makeMaliciousMessage,
     seedMaliciousMessage,
     seedMessages,
+    makeExpectedUser,
   }

@@ -5,7 +5,7 @@ process.env.TZ = 'UCT'
 
 require('dotenv').config()
 
-process.env.TEST_DB_URL = process.env.TEST_DB_URL
+process.env.TEST_DATABASE_URL = process.env.TEST_DATABASE_URL
   || "postgresql://dunder_mifflin@localhost/lgbtq-test"
 
 const { expect } = require('chai')

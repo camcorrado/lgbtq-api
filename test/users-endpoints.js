@@ -13,7 +13,7 @@ describe('Users Endpoints', function() {
     before('make knex instance', () => {
         db = knex({
             client: 'pg',
-            connection: process.env.TEST_DB_URL,
+            connection: process.env.TEST_DATABASE_URL,
         })
         app.set('db', db)
     })
@@ -23,6 +23,36 @@ describe('Users Endpoints', function() {
     before('cleanup', () => helpers.cleanTables(db))
 
     afterEach('cleanup', () => helpers.cleanTables(db))
+
+    describe(`GET /api/users`, () => {
+        context(`Given no users`, () => {
+            it(`responds with 200 and an empty list`, () => {
+                return supertest(app)
+                    .get('/api/users')
+                    .expect(200, [])
+            })
+        })
+
+        context('Given there are users in the database', () => {
+            beforeEach('insert users', () =>
+                helpers.seedUsers(
+                    db,
+                    testUsers,
+                )
+            )
+
+            it('responds with 200 and all of the users', () => {
+                const expectedUsers = testUsers.map(user =>
+                    helpers.makeExpectedUser(
+                        user
+                    )
+                )
+                return supertest(app)
+                    .get('/api/users')
+                    .expect(200, expectedUsers)
+            })
+        })
+    })
 
     describe(`POST /api/users`, () => {
         context(`User Validation`, () => {
@@ -198,6 +228,7 @@ describe('Users Endpoints', function() {
 
                     return supertest(app)
                         .patch(`/api/users`)
+                        .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                         .send(registerAttemptBody)
                         .expect(400, { error: `Missing '${field}' in request body` })
                 })
@@ -211,6 +242,7 @@ describe('Users Endpoints', function() {
 
                 return supertest(app)
                     .patch(`/api/users`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .send(userShortPassword)
                     .expect(400, { error: `Password must be longer than 8 characters` })
             })
@@ -223,6 +255,7 @@ describe('Users Endpoints', function() {
 
                 return supertest(app)
                     .patch(`/api/users`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .send(userLongPassword)
                     .expect(400, {error: `Password must be less than 72 characters`})
             })
@@ -235,6 +268,7 @@ describe('Users Endpoints', function() {
 
                 return supertest(app)
                     .patch(`/api/users`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .send(userPasswordStartsSpaces)
                     .expect(400, { error: `Password must not start or end with empty spaces` })
             })
@@ -247,6 +281,7 @@ describe('Users Endpoints', function() {
 
                 return supertest(app)
                     .patch(`/api/users`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .send(userPasswordEndsSpaces)
                     .expect(400, { error: `Password must not start or end with empty spaces` })
             })
@@ -259,6 +294,7 @@ describe('Users Endpoints', function() {
                 
                 return supertest(app)
                     .patch(`/api/users`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .send(userPasswordNotComplex)
                     .expect(400, { error: `Password must contain 1 upper case, lower case, number and special character` })
             })
@@ -272,6 +308,7 @@ describe('Users Endpoints', function() {
 
                 return supertest(app)
                     .patch(`/api/users`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .send(updatedUser)
                     .expect(204)
             })
@@ -284,6 +321,7 @@ describe('Users Endpoints', function() {
     
                 return supertest(app)
                     .patch(`/api/users`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .send({
                         ...updatedUser,
                         fieldToIgnore: 'should not be in GET response'

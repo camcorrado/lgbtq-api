@@ -6,7 +6,15 @@ const UsersService = require('./users-service')
 const usersRouter = express.Router()
 
 usersRouter
-    .post('/', (req, res, next) => {
+    .route('/')
+    .get((req, res, next) => {
+        UsersService.getAllUsers(req.app.get('db'))
+            .then(users => {
+                res.json(users.map(UsersService.serializeUser))
+            })
+        .catch(next)
+    })
+    .post((req, res, next) => {
         const { password, full_name, email } = req.body
 
         for (const field of ['full_name', 'email', 'password']) {

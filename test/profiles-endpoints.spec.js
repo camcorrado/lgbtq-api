@@ -78,7 +78,6 @@ describe('Profiles Endpoints', function() {
                         expect(res.body[0].username).to.eql(expectedProfile.username)
                         expect(res.body[0].bio).to.eql(expectedProfile.bio)
                         expect(res.body[0].profile_pic).to.eql(expectedProfile.profile_pic)
-                        expect(res.body[0].interests).to.eql(expectedProfile.interests)
                         expect(res.body[0].pronouns).to.eql(expectedProfile.pronouns)
                     })
             })
@@ -165,7 +164,7 @@ describe('Profiles Endpoints', function() {
                 username: 'test username',
                 bio: 'test bio',
                 profile_pic: 'test profile_pic',
-                interests: 'test interests',
+                interests: ['test interests'],
                 pronouns: 'test pronouns',
                 zipcode: 123456,
             }
@@ -209,7 +208,7 @@ describe('Profiles Endpoints', function() {
                 username: 'test username',
                 bio: 'test bio',
                 profile_pic: 'test profile_pic',
-                interests: 'test interests',
+                interests: ['test interests'],
                 pronouns: 'test pronouns',
                 zipcode: 'test zipcode',
             }
@@ -243,7 +242,7 @@ describe('Profiles Endpoints', function() {
                     username: 'updated profile username',
                     bio: 'updated profile bio',
                     profile_pic: 'updated profile pic',
-                    interests: 'updated interests',
+                    interests: ['updated interests'],
                     pronouns: 'updated pronouns',
                     zipcode: 11111
                 }

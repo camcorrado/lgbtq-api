@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     username TEXT NOT NULL,
     bio TEXT NOT NULL,
     profile_pic TEXT NOT NULL,
-    interests TEXT NOT NULL,
+    interests TEXT[] NOT NULL,
     pronouns TEXT NOT NULL,
     zipcode INTEGER NOT NULL
 );

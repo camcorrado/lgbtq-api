@@ -31,7 +31,7 @@ const ProfilesService = {
 			username: xss(profile.username),
 			bio: xss(profile.bio),
 			profile_pic: xss(profile.profile_pic),
-			interests: xss(profile.interests),
+			interests: profile.interests,
 			pronouns: xss(profile.pronouns),
 			zipcode: profile.zipcode,
 		}

@@ -51,7 +51,7 @@ function makeProfilesArray(users) {
             username: 'First test username!',
             bio: 'First test bio!',
             profile_pic: 'First test pic!',
-            interests: 'First test interests',
+            interests: ['First test interests'],
             pronouns: 'First test pronouns!',
             zipcode: 10001
         },
@@ -61,7 +61,7 @@ function makeProfilesArray(users) {
             username: 'Second test username!',
             bio: 'Second test bio!',
             profile_pic: 'Second test pic!',
-            interests: 'Second test interests',
+            interests: ['Second test interests'],
             pronouns: 'Second test pronouns!',
             zipcode: 10002
         },
@@ -71,7 +71,7 @@ function makeProfilesArray(users) {
             username: 'Third test username!',
             bio: 'Third test bio!',
             profile_pic: 'Third test pic!',
-            interests: 'Third test interests',
+            interests: ['Third test interests'],
             pronouns: 'Third test pronouns!',
             zipcode: 10003
         },
@@ -81,7 +81,7 @@ function makeProfilesArray(users) {
             username: 'Fourth test username!',
             bio: 'Fourth test bio!',
             profile_pic: 'Fourth test pic!',
-            interests: 'Fourth test interests',
+            interests: ['Fourth test interests'],
             pronouns: 'Fourth test pronouns!',
             zipcode: 10004
         },
@@ -253,7 +253,7 @@ function makeMaliciousProfile(user) {
         username: 'Bad Guy',
         bio: 'mwahahaha',
         profile_pic: 'Naughty naughty very naughty <script>alert("xss");</script>',
-        interests: 'hacking',
+        interests: ['hacking'],
         pronouns: `Meanie`,
         zipcode: 66666
     }
@@ -262,7 +262,6 @@ function makeMaliciousProfile(user) {
         username: 'Bad Guy',
         bio: `mwahahaha`,
         profile_pic: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
-        interests: 'hacking',
         pronouns: `Meanie`,
     }
     return {

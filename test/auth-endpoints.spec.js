@@ -83,7 +83,7 @@ describe("Auth Endpoints", function () {
     });
   });
 
-  describe.only(`POST /api/auth/refresh`, () => {
+  describe(`POST /api/auth/refresh`, () => {
     beforeEach("insert users", () => helpers.seedUsers(db, testUsers));
 
     it(`responds 200 and JWT auth token using secret`, () => {

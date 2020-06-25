@@ -4,9 +4,6 @@ const moment = require("moment");
 const xss = require("xss");
 
 const UsersService = {
-  getAllUsers(knex) {
-    return knex.select("*").from("users");
-  },
   hasUserWithEmail(knex, email) {
     return knex
       .from("users")

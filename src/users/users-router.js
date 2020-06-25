@@ -7,12 +7,8 @@ const usersRouter = express.Router()
 
 usersRouter
     .route('/')
-    .get((req, res, next) => {
-        UsersService.getAllUsers(req.app.get('db'))
-            .then(users => {
-                res.json(users.map(UsersService.serializeUser))
-            })
-        .catch(next)
+    .get(requireAuth,(req, res, next) => {
+        res.json(UsersService.serializeUser(req.user));
     })
     .post((req, res, next) => {
         const { password, full_name, email } = req.body

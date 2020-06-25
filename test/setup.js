@@ -1,4 +1,4 @@
-process.env.JWT_EXPIRY = "3m";
+process.env.JWT_EXPIRY = "3h";
 process.env.JWT_SECRET = "test-jwt-secret";
 process.env.NODE_ENV = "test";
 process.env.TZ = "UCT";

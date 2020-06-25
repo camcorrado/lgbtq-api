@@ -4,7 +4,7 @@ module.exports = {
   JWT_SECRET:
     process.env.JWT_SECRET ||
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1OTE4MTkxMTgsInN1YiI6IlRVMUBnbWFpbC5jb20ifQ.IAZ2caz1Ll1uP1-mHGlb4Ti_Yr7hu4U8Rn2pAkL8Ng4",
-  JWT_EXPIRY: process.env.JWT_EXPIRY || "30m",
+  JWT_EXPIRY: process.env.JWT_EXPIRY || "3h",
   DATABASE_URL:
     process.env.DATABASE_URL || "postgresql://dunder_mifflin@localhost/lgbtq",
   TEST_DATABASE_URL:

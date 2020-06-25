@@ -1,5 +1,6 @@
 const AuthService = require("./auth-service");
 const express = require("express");
+const { requireAuth } = require("../middleware/jwt-auth");
 
 const authRouter = express.Router();
 
@@ -36,6 +37,12 @@ authRouter.post("/login", (req, res, next) => {
       });
     })
     .catch(next);
+});
+
+authRouter.post("/refresh", requireAuth, (req, res) => {
+  const sub = req.user.email;
+  const payload = { user_id: req.user.id };
+  res.send({ authToken: AuthService.createJWT(sub, payload) });
 });
 
 module.exports = authRouter;

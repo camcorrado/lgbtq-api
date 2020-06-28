@@ -17,7 +17,6 @@ conversationsRouter
   .post(requireAuth, (req, res, next) => {
     const { users } = req.body;
     const newConversation = { users };
-
     for (const [key, value] of Object.entries(newConversation)) {
       if (value == null) {
         return res

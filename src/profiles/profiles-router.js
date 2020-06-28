@@ -22,6 +22,8 @@ profilesRouter
       interests,
       pronouns,
       zipcode,
+      blocked_profiles,
+      favorited_profiles,
     } = req.body;
     const newProfile = {
       username,
@@ -30,6 +32,8 @@ profilesRouter
       interests,
       pronouns,
       zipcode,
+      blocked_profiles,
+      favorited_profiles,
     };
 
     for (const [key, value] of Object.entries(newProfile)) {
@@ -66,6 +70,8 @@ profilesRouter
       interests,
       pronouns,
       zipcode,
+      blocked_profiles,
+      favorited_profiles,
     } = req.body;
     const profileToUpdate = {
       username,
@@ -74,16 +80,16 @@ profilesRouter
       interests,
       pronouns,
       zipcode,
+      blocked_profiles,
+      favorited_profiles,
     };
 
     const numberOfValues = Object.values(profileToUpdate).filter(Boolean)
       .length;
     if (numberOfValues === 0) {
-      return res
-        .status(400)
-        .json({
-          error: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode'`,
-        });
+      return res.status(400).json({
+        error: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode', 'blocked_profiles', 'favorited_profiles'`,
+      });
     }
 
     ProfilesService.updateProfile(

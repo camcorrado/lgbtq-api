@@ -62,6 +62,8 @@ function makeProfilesArray(users) {
       interests: ["First test interests"],
       pronouns: "First test pronouns!",
       zipcode: 10001,
+      blocked_profiles: [1, 2, 3],
+      favorited_profiles: [4, 5, 6],
     },
     {
       id: 2,
@@ -72,6 +74,8 @@ function makeProfilesArray(users) {
       interests: ["Second test interests"],
       pronouns: "Second test pronouns!",
       zipcode: 10002,
+      blocked_profiles: [1, 2, 3],
+      favorited_profiles: [4, 5, 6],
     },
     {
       id: 3,
@@ -82,6 +86,8 @@ function makeProfilesArray(users) {
       interests: ["Third test interests"],
       pronouns: "Third test pronouns!",
       zipcode: 10003,
+      blocked_profiles: [1, 2, 3],
+      favorited_profiles: [4, 5, 6],
     },
     {
       id: 4,
@@ -92,6 +98,8 @@ function makeProfilesArray(users) {
       interests: ["Fourth test interests"],
       pronouns: "Fourth test pronouns!",
       zipcode: 10004,
+      blocked_profiles: [1, 2, 3],
+      favorited_profiles: [4, 5, 6],
     },
   ];
 }
@@ -100,28 +108,28 @@ function makeConversationsArray() {
   return [
     {
       id: 1,
-      users: "1, 2",
+      users: [1, 2],
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
     },
     {
       id: 2,
-      users: "1, 3",
+      users: [1, 2],
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
     },
     {
       id: 3,
-      users: "1, 2, 3",
+      users: [3, 4],
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
     },
     {
       id: 4,
-      users: "4, 2",
+      users: [3, 4],
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
@@ -245,6 +253,8 @@ function makeExpectedProfile(profile) {
     interests: profile.interests,
     pronouns: profile.pronouns,
     zipcode: profile.zipcode,
+    blocked_profiles: profile.blocked_profiles,
+    favorited_profiles: profile.favorited_profiles,
   };
 }
 
@@ -276,6 +286,8 @@ function makeMaliciousProfile(user) {
     interests: ["hacking"],
     pronouns: `Meanie`,
     zipcode: 66666,
+    blocked_profiles: [666],
+    favorited_profiles: [999],
   };
   const expectedProfile = {
     ...maliciousProfile,

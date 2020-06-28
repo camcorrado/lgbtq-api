@@ -86,8 +86,7 @@ describe("Conversations Endpoints", function () {
 
     it(`creates a conversation, responding with 201 and the new conversation`, function () {
       const newConversation = {
-        users: "Test new users",
-        ...testConversations[0],
+        users: [1, 2, 3],
       };
       return supertest(app)
         .post("/api/conversations")

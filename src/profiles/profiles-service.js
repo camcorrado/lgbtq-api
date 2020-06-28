@@ -32,6 +32,8 @@ const ProfilesService = {
       interests: profile.interests,
       pronouns: xss(profile.pronouns),
       zipcode: profile.zipcode,
+      blocked_profiles: profile.blocked_profiles,
+      favorited_profiles: profile.favorited_profiles,
     };
   },
 };

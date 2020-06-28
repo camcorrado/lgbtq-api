@@ -137,6 +137,8 @@ describe("Profiles Endpoints", function () {
         interests: ["test interests"],
         pronouns: "test pronouns",
         zipcode: 123456,
+        blocked_profiles: [666],
+        favorited_profiles: [999],
       };
       return supertest(app)
         .post("/api/profiles")
@@ -152,6 +154,10 @@ describe("Profiles Endpoints", function () {
           expect(res.body.interests).to.eql(newProfile.interests);
           expect(res.body.pronouns).to.eql(newProfile.pronouns);
           expect(res.body.zipcode).to.eql(newProfile.zipcode);
+          expect(res.body.blocked_profiles).to.eql(newProfile.blocked_profiles);
+          expect(res.body.favoritedProfiles).to.eql(
+            newProfile.favoritedProfiles
+          );
           expect(res.headers.location).to.eql(`/api/profiles/${res.body.id}`);
         })
         .expect((res) =>
@@ -168,6 +174,10 @@ describe("Profiles Endpoints", function () {
               expect(row.interests).to.eql(newProfile.interests);
               expect(row.pronouns).to.eql(newProfile.pronouns);
               expect(row.zipcode).to.eql(newProfile.zipcode);
+              expect(row.blocked_profiles).to.eql(newProfile.blocked_profiles);
+              expect(row.favoritedProfiles).to.eql(
+                newProfile.favoritedProfiles
+              );
             })
         );
     });
@@ -219,6 +229,8 @@ describe("Profiles Endpoints", function () {
           interests: ["updated interests"],
           pronouns: "updated pronouns",
           zipcode: 11111,
+          blocked_profiles: [666],
+          favorited_profiles: [999],
         };
         const expectedProfile = {
           ...testProfiles[idToUpdate - 1],
@@ -246,7 +258,7 @@ describe("Profiles Endpoints", function () {
           )
           .send({ irrelevantField: "foo" })
           .expect(400, {
-            error: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode'`,
+            error: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode', 'blocked_profiles', 'favorited_profiles'`,
           });
       });
 

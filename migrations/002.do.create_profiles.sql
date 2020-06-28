@@ -6,5 +6,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     profile_pic TEXT NOT NULL,
     interests TEXT[] NOT NULL,
     pronouns TEXT NOT NULL,
-    zipcode INTEGER NOT NULL
+    zipcode INTEGER NOT NULL,
+    blocked_profiles INTEGER[],
+    favorited_profiles INTEGER[]
 );

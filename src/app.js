@@ -8,7 +8,6 @@ const morgan = require("morgan");
 const { NODE_ENV } = require("./config");
 const profilesRouter = require("./profiles/profiles-router");
 const usersRouter = require("./users/users-router");
-const knex = require("knex");
 require("dotenv").config();
 
 const app = express();

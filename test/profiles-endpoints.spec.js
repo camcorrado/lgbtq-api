@@ -214,11 +214,46 @@ describe("Profiles Endpoints", function () {
     });
   });
 
-  describe(`PATCH /api/profiles/:profile_id`, () => {
+  describe.only(`PATCH /api/profiles/:profile_id`, () => {
     context("Given there are profiles in the database", () => {
       beforeEach("insert profiles", () =>
         helpers.seedProfiles(db, testUsers, testProfiles)
       );
+
+      const requiredFields = [
+        "username",
+        "bio",
+        "profile_pic",
+        "interests",
+        "pronouns",
+        "zipcode",
+        "blocked_profiles",
+        "favorited_profiles",
+      ];
+
+      requiredFields.forEach((field) => {
+        const registerAttemptBody = {
+          username: "test patch username",
+          bio: "test patch bio",
+          profile_pic: "test patch profile_pic",
+          interests: ["Gaming"],
+          pronouns: "test patch pronouns",
+          zipcode: 11111,
+          blocked_profiles: [1, 2],
+          favorited_profiles: [3, 4],
+          ...testProfiles[0],
+        };
+
+        it(`responds with 400 required error when '${field}' is missing`, () => {
+          delete registerAttemptBody[field];
+
+          return supertest(app)
+            .patch(`/api/profiles/1`)
+            .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
+            .send(registerAttemptBody)
+            .expect(400, { error: `Missing '${field}' in request body` });
+        });
+      });
 
       it("responds with 204 and updates the profile", () => {
         const idToUpdate = 1;
@@ -246,20 +281,6 @@ describe("Profiles Endpoints", function () {
               .get(`/api/profiles/${idToUpdate}`)
               .expect(expectedProfile)
           );
-      });
-
-      it(`responds with 400 when no required fields supplied`, () => {
-        const idToUpdate = 1;
-        return supertest(app)
-          .patch(`/api/profiles/${idToUpdate}`)
-          .set(
-            "Authorization",
-            helpers.makeAuthHeader(testUsers[idToUpdate - 1])
-          )
-          .send({ irrelevantField: "foo" })
-          .expect(400, {
-            error: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode', 'blocked_profiles', 'favorited_profiles'`,
-          });
       });
 
       it(`responds with 204 when updating only a subset of fields`, () => {

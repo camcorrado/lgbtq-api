@@ -63,6 +63,7 @@ profilesRouter
     res.json(ProfilesService.serializeProfile(res.profile));
   })
   .patch(requireAuth, (req, res, next) => {
+    let updatedProfile = {};
     const {
       username,
       bio,
@@ -73,29 +74,73 @@ profilesRouter
       blocked_profiles,
       favorited_profiles,
     } = req.body;
-    const profileToUpdate = {
-      username,
-      bio,
-      profile_pic,
-      interests,
-      pronouns,
-      zipcode,
-      blocked_profiles,
-      favorited_profiles,
-    };
 
-    const numberOfValues = Object.values(profileToUpdate).filter(Boolean)
-      .length;
-    if (numberOfValues === 0) {
-      return res.status(400).json({
-        error: `Request body must contain either 'username', 'bio', 'profile_pic', 'interests', 'pronouns', 'zipcode', 'blocked_profiles', 'favorited_profiles'`,
-      });
+    if (username) {
+      updatedProfile.username = username;
+    } else {
+      return res
+        .status(400)
+        .json({ error: `Missing 'username' in request body` });
+    }
+
+    if (bio) {
+      updatedProfile.bio = bio;
+    } else {
+      return res.status(400).json({ error: `Missing 'bio' in request body` });
+    }
+
+    if (profile_pic) {
+      updatedProfile.profile_pic = profile_pic;
+    } else {
+      return res
+        .status(400)
+        .json({ error: `Missing 'profile_pic' in request body` });
+    }
+
+    if (interests) {
+      updatedProfile.interests = interests;
+    } else {
+      return res
+        .status(400)
+        .json({ error: `Missing 'interests' in request body` });
+    }
+
+    if (pronouns) {
+      updatedProfile.pronouns = pronouns;
+    } else {
+      return res
+        .status(400)
+        .json({ error: `Missing 'pronouns' in request body` });
+    }
+
+    if (zipcode) {
+      updatedProfile.zipcode = zipcode;
+    } else {
+      return res
+        .status(400)
+        .json({ error: `Missing 'zipcode' in request body` });
+    }
+
+    if (blocked_profiles) {
+      updatedProfile.blocked_profiles = blocked_profiles;
+    } else {
+      return res
+        .status(400)
+        .json({ error: `Missing 'blocked_profiles' in request body` });
+    }
+
+    if (favorited_profiles) {
+      updatedProfile.favorited_profiles = favorited_profiles;
+    } else {
+      return res
+        .status(400)
+        .json({ error: `Missing 'favorited_profiles' in request body` });
     }
 
     ProfilesService.updateProfile(
       req.app.get("db"),
       req.params.profile_id,
-      profileToUpdate
+      updatedProfile
     )
       .then(() => res.status(204).end())
       .catch(next);

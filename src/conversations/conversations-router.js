@@ -7,10 +7,14 @@ const conversationsRouter = express.Router();
 
 conversationsRouter
   .route("/")
-  .get((req, res, next) => {
+  .get(requireAuth, (req, res, next) => {
     ConversationsService.getAllConversations(req.app.get("db"))
       .then((conversations) => {
-        res.json(conversations.map(ConversationsService.serializeConversation));
+        res.json(
+          conversations
+            .map(ConversationsService.serializeConversation)
+            .filter((conversation) => conversation.users.includes(req.user.id))
+        );
       })
       .catch(next);
   })

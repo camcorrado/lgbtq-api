@@ -214,7 +214,7 @@ describe("Profiles Endpoints", function () {
     });
   });
 
-  describe.only(`PATCH /api/profiles/:profile_id`, () => {
+  describe(`PATCH /api/profiles/:profile_id`, () => {
     context("Given there are profiles in the database", () => {
       beforeEach("insert profiles", () =>
         helpers.seedProfiles(db, testUsers, testProfiles)

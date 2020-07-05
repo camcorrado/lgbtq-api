@@ -23,24 +23,19 @@ describe("Conversations Endpoints", function () {
   afterEach("cleanup", () => helpers.cleanTables(db));
 
   describe(`GET /api/conversations`, () => {
-    context(`Given no conversations`, () => {
-      it(`responds with 200 and an empty list`, () => {
-        return supertest(app).get("/api/conversations").expect(200, []);
-      });
-    });
-
     context("Given there are conversations in the database", () => {
       beforeEach("insert conversations", () =>
-        helpers.seedConversations(db, testConversations)
+        helpers.seedConversations(db, testUsers, testConversations)
       );
 
-      it("responds with 200 and all of the conversations", () => {
+      it("responds with 200 and all of the user's conversations", () => {
         const expectedConversations = testConversations.map((conversation) =>
           helpers.makeExpectedConversation(conversation)
         );
         return supertest(app)
           .get("/api/conversations")
-          .expect(200, expectedConversations);
+          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
+          .expect(200, [expectedConversations[0], expectedConversations[1]]);
       });
     });
   });
@@ -60,7 +55,7 @@ describe("Conversations Endpoints", function () {
 
     context("Given there are conversations in the database", () => {
       beforeEach("insert conversations", () =>
-        helpers.seedConversations(db, testConversations)
+        helpers.seedConversations(db, testUsers, testConversations)
       );
 
       it("responds with 200 and the specified conversation", () => {
@@ -78,10 +73,8 @@ describe("Conversations Endpoints", function () {
   });
 
   describe(`POST /api/conversations`, () => {
-    beforeEach("insert users", () => helpers.seedUsers(db, testUsers));
-
     beforeEach("insert conversations", () =>
-      helpers.seedConversations(db, testConversations)
+      helpers.seedConversations(db, testUsers, testConversations)
     );
 
     it(`creates a conversation, responding with 201 and the new conversation`, function () {

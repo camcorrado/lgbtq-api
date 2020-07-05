@@ -214,10 +214,11 @@ function seedProfiles(db, users, profiles) {
   });
 }
 
-function seedConversations(db, conversations) {
+function seedConversations(db, users, conversations) {
   return db.transaction(async (trx) => {
+    await seedUsers(trx, users);
     await trx.into("conversations").insert(conversations);
-    await trx.raw(`SELECT setval('profiles_id_seq', ?)`, [
+    await trx.raw(`SELECT setval('conversations_id_seq', ?)`, [
       conversations[conversations.length - 1].id,
     ]);
   });
@@ -225,8 +226,7 @@ function seedConversations(db, conversations) {
 
 function seedMessages(db, users, conversations, messages) {
   return db.transaction(async (trx) => {
-    await seedUsers(trx, users);
-    await seedConversations(trx, conversations);
+    await seedConversations(trx, users, conversations);
     await trx.into("messages").insert(messages);
     await trx.raw(`SELECT setval('messages_id_seq', ?)`, [
       messages[messages.length - 1].id,
@@ -331,9 +331,9 @@ function seedMaliciousProfile(db, user, profile) {
 }
 
 function seedMaliciousMessage(db, user, conversation, message) {
-  return seedConversations(db, [conversation])
-    .then(() => db.into("users").insert([user]))
-    .then(() => db.into("messages").insert([message]));
+  return seedConversations(db, [user], [conversation]).then(() =>
+    db.into("messages").insert([message])
+  );
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {

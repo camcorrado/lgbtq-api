@@ -8,6 +8,13 @@ const MessagesService = {
   getById(knex, id) {
     return knex.from("messages").select("*").where("id", id).first();
   },
+  getByConversationId(knex, id) {
+    return knex
+      .from("messages")
+      .select("*")
+      .where("conversation_id", id)
+      .first();
+  },
   insertMessage(knex, newMessage) {
     return knex
       .insert(newMessage)

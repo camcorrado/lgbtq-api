@@ -1,4 +1,5 @@
 const ConversationsService = require("./conversations-service");
+const MessagesService = require("../messages/messages-service");
 const express = require("express");
 const path = require("path");
 const { requireAuth } = require("../middleware/jwt-auth");
@@ -43,7 +44,13 @@ conversationsRouter
   .route("/:conversation_id")
   .all(checkConversationExists)
   .get((req, res) => {
-    res.json(ConversationsService.serializeConversation(res.conversation));
+    MessagesService.getByConversationId(
+      req.app.get("db", req.params.conversation_id)
+    )
+      .then((messages) => {
+        res.json(messages.map(MessagesService.serializeMessage));
+      })
+      .catch(next);
   });
 
 async function checkConversationExists(req, res, next) {

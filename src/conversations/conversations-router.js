@@ -43,10 +43,8 @@ conversationsRouter
 conversationsRouter
   .route("/:conversation_id")
   .all(checkConversationExists)
-  .get((req, res) => {
-    MessagesService.getByConversationId(
-      req.app.get("db", req.params.conversation_id)
-    )
+  .get((req, res, next) => {
+    MessagesService.getByConversationId(req.app.get("db"), res.conversation.id)
       .then((messages) => {
         res.json(messages.map(MessagesService.serializeMessage));
       })

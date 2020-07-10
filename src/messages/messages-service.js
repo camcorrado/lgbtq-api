@@ -9,11 +9,7 @@ const MessagesService = {
     return knex.from("messages").select("*").where("id", id).first();
   },
   getByConversationId(knex, id) {
-    return knex
-      .from("messages")
-      .select("*")
-      .where("conversation_id", id)
-      .first();
+    return knex.from("messages").select("*").where("conversation_id", id);
   },
   insertMessage(knex, newMessage) {
     return knex

@@ -6,7 +6,7 @@ const moment = require("moment");
 describe("Conversations Endpoints", function () {
   let db;
 
-  const { testUsers, testConversations } = helpers.makeFixtures();
+  const { testUsers, testConversations, testMessages } = helpers.makeFixtures();
 
   before("make knex instance", () => {
     db = knex({
@@ -55,19 +55,18 @@ describe("Conversations Endpoints", function () {
 
     context("Given there are conversations in the database", () => {
       beforeEach("insert conversations", () =>
-        helpers.seedConversations(db, testUsers, testConversations)
+        helpers.seedMessages(db, testUsers, testConversations, testMessages)
       );
 
       it("responds with 200 and the specified conversation", () => {
         const conversationId = 2;
-        const expectedConversation = helpers.makeExpectedConversation(
-          testConversations[conversationId - 1]
+        const expectedConversation = helpers.makeExpectedMessage(
+          testMessages[conversationId - 1]
         );
 
         return supertest(app)
           .get(`/api/conversations/${conversationId}`)
-          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
-          .expect(200, expectedConversation);
+          .expect(200, [expectedConversation]);
       });
     });
   });

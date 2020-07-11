@@ -25,6 +25,9 @@ const ConversationsService = {
       ),
     };
   },
+  deleteConversation(knex, id) {
+    return knex("conversations").where({ id }).delete();
+  },
 };
 
 module.exports = ConversationsService;

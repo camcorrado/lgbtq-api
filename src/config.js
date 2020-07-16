@@ -10,5 +10,5 @@ module.exports = {
   TEST_DATABASE_URL:
     process.env.TEST_DATABASE_URL ||
     "postgresql://dunder_mifflin@localhost/lgbtq-test",
-  CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || "https://lgbtq.now.sh/",
+  CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || "http://localhost:3000/",
 };

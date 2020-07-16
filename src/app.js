@@ -14,6 +14,7 @@ const app = express();
 const { CLIENT_ORIGIN } = require("./config");
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
 
+app.options("*", cors());
 app.use(
   cors({
     origin: CLIENT_ORIGIN,

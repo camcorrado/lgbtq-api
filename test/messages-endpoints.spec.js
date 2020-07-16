@@ -145,6 +145,7 @@ describe("Messages Endpoints", function () {
         conversation_id: testConversation.id,
         user_id: testUser.id,
         content: "test content",
+        msg_read: false,
       };
       return supertest(app)
         .post("/api/messages")
@@ -156,6 +157,7 @@ describe("Messages Endpoints", function () {
           expect(res.body.user_id).to.eql(newMessage.user_id);
           expect(res.body.conversation_id).to.eql(newMessage.conversation_id);
           expect(res.body.content).to.eql(newMessage.content);
+          expect(res.body.msg_read).to.eql(newMessage.msg_read);
           const expectedDate = moment(new Date()).format("ddd MMM DD YYYY");
           const actualDate = moment(new Date(res.body.date_created)).format(
             "ddd MMM DD YYYY"
@@ -173,6 +175,7 @@ describe("Messages Endpoints", function () {
               expect(row.user_id).to.eql(newMessage.user_id);
               expect(row.conversation_id).to.eql(newMessage.conversation_id);
               expect(row.content).to.eql(newMessage.content);
+              expect(row.msg_read).to.eql(newMessage.msg_read);
               const expectedDate = moment(new Date()).format("ddd MMM DD YYYY");
               const actualDate = moment(new Date(res.body.date_created)).format(
                 "ddd MMM DD YYYY"

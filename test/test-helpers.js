@@ -144,6 +144,7 @@ function makeMessagesArray(users, conversations) {
       conversation_id: conversations[0].id,
       user_id: users[0].id,
       content: "Hi",
+      msg_read: false,
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
@@ -153,6 +154,7 @@ function makeMessagesArray(users, conversations) {
       conversation_id: conversations[1].id,
       user_id: users[1].id,
       content: "Hi",
+      msg_read: false,
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
@@ -162,6 +164,7 @@ function makeMessagesArray(users, conversations) {
       conversation_id: conversations[2].id,
       user_id: users[2].id,
       content: "Hi",
+      msg_read: true,
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
@@ -171,6 +174,7 @@ function makeMessagesArray(users, conversations) {
       conversation_id: conversations[3].id,
       user_id: users[3].id,
       content: "Hi",
+      msg_read: true,
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
@@ -272,6 +276,7 @@ function makeExpectedMessage(message) {
     conversation_id: message.conversation_id,
     user_id: message.user_id,
     content: message.content,
+    msg_read: message.msg_read,
     date_created: moment(message.date_created).format("ddd MMM DD YYYY"),
   };
 }
@@ -309,6 +314,7 @@ function makeMaliciousMessage(conversation, user) {
     conversation_id: conversation.id,
     user_id: user.id,
     content: 'Naughty naughty very naughty <script>alert("xss");</script>',
+    msg_read: false,
     date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
       "ddd MMM DD YYYY"
     ),

@@ -26,6 +26,7 @@ const MessagesService = {
       conversation_id: message.conversation_id,
       user_id: message.user_id,
       content: xss(message.content),
+      msg_read: message.msg_read,
       date_created: moment(message.date_created).format("ddd MMM DD YYYY"),
     };
   },

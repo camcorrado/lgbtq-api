@@ -147,7 +147,6 @@ describe("Conversations Endpoints", function () {
         const expectedConversations = testConversations.filter(
           (convo) => convo.id !== idToRemove
         );
-        console.log({ expectedConversations });
         return supertest(app)
           .delete(`/api/conversations/${idToRemove}`)
           .expect(204)

@@ -31,7 +31,7 @@ const ProfilesService = {
       profile_pic: xss(profile.profile_pic),
       interests: profile.interests,
       pronouns: xss(profile.pronouns),
-      zipcode: profile.zipcode,
+      geolocation: profile.geolocation,
       blocked_profiles: profile.blocked_profiles,
       favorited_profiles: profile.favorited_profiles,
     };

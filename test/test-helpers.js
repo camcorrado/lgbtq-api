@@ -61,7 +61,7 @@ function makeProfilesArray(users) {
       profile_pic: "First test pic!",
       interests: ["First test interests"],
       pronouns: "First test pronouns!",
-      zipcode: 10001,
+      geolocation: "(10, -10)",
       blocked_profiles: [1, 2, 3],
       favorited_profiles: [4, 5, 6],
     },
@@ -73,7 +73,7 @@ function makeProfilesArray(users) {
       profile_pic: "Second test pic!",
       interests: ["Second test interests"],
       pronouns: "Second test pronouns!",
-      zipcode: 10002,
+      geolocation: "(20, -20)",
       blocked_profiles: [1, 2, 3],
       favorited_profiles: [4, 5, 6],
     },
@@ -85,7 +85,7 @@ function makeProfilesArray(users) {
       profile_pic: "Third test pic!",
       interests: ["Third test interests"],
       pronouns: "Third test pronouns!",
-      zipcode: 10003,
+      geolocation: "(30, -30)",
       blocked_profiles: [1, 2, 3],
       favorited_profiles: [4, 5, 6],
     },
@@ -97,7 +97,7 @@ function makeProfilesArray(users) {
       profile_pic: "Fourth test pic!",
       interests: ["Fourth test interests"],
       pronouns: "Fourth test pronouns!",
-      zipcode: 10004,
+      geolocation: "(40, -40)",
       blocked_profiles: [1, 2, 3],
       favorited_profiles: [4, 5, 6],
     },
@@ -248,6 +248,10 @@ function makeExpectedUser(user) {
 }
 
 function makeExpectedProfile(profile) {
+  let geoData = profile.geolocation
+    .replace("(", "")
+    .replace(")", "")
+    .split(",");
   return {
     id: profile.id,
     user_id: profile.user_id,
@@ -256,7 +260,7 @@ function makeExpectedProfile(profile) {
     profile_pic: profile.profile_pic,
     interests: profile.interests,
     pronouns: profile.pronouns,
-    zipcode: profile.zipcode,
+    geolocation: { x: Number(geoData[0]), y: Number(geoData[1]) },
     blocked_profiles: profile.blocked_profiles,
     favorited_profiles: profile.favorited_profiles,
   };
@@ -290,7 +294,7 @@ function makeMaliciousProfile(user) {
     profile_pic: 'Naughty naughty very naughty <script>alert("xss");</script>',
     interests: ["hacking"],
     pronouns: `Meanie`,
-    zipcode: 66666,
+    geolocation: "40, -73",
     blocked_profiles: [666],
     favorited_profiles: [999],
   };

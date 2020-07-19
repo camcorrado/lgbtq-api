@@ -21,7 +21,7 @@ profilesRouter
       profile_pic,
       interests,
       pronouns,
-      zipcode,
+      geolocation,
       blocked_profiles,
       favorited_profiles,
     } = req.body;
@@ -31,7 +31,7 @@ profilesRouter
       profile_pic,
       interests,
       pronouns,
-      zipcode,
+      geolocation,
       blocked_profiles,
       favorited_profiles,
     };
@@ -70,7 +70,7 @@ profilesRouter
       profile_pic,
       interests,
       pronouns,
-      zipcode,
+      geolocation,
       blocked_profiles,
       favorited_profiles,
     } = req.body;
@@ -113,12 +113,12 @@ profilesRouter
         .json({ error: `Missing 'pronouns' in request body` });
     }
 
-    if (zipcode) {
-      updatedProfile.zipcode = zipcode;
+    if (geolocation) {
+      updatedProfile.geolocation = geolocation;
     } else {
       return res
         .status(400)
-        .json({ error: `Missing 'zipcode' in request body` });
+        .json({ error: `Missing 'geolocation' in request body` });
     }
 
     if (blocked_profiles) {

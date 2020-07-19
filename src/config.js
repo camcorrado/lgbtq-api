@@ -10,5 +10,6 @@ module.exports = {
   TEST_DATABASE_URL:
     process.env.TEST_DATABASE_URL ||
     "postgresql://dunder_mifflin@localhost/lgbtq-test",
-  CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || "http://localhost:3000/",
+  CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || "http://localhost:3000",
+  GEOLOCATION_API_KEY: process.env.GEOLOCATION_API_KEY,
 };

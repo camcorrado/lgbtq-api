@@ -2,7 +2,7 @@ const app = require("../src/app");
 const helpers = require("./test-helpers");
 const knex = require("knex");
 
-describe("Profiles Endpoints", function () {
+describe.only("Profiles Endpoints", function () {
   let db;
 
   const { testUsers, testProfiles } = helpers.makeFixtures();
@@ -136,10 +136,16 @@ describe("Profiles Endpoints", function () {
         profile_pic: "test profile_pic",
         interests: ["test interests"],
         pronouns: "test pronouns",
-        zipcode: 123456,
+        geolocation: "40.7043986, -73.9018292",
         blocked_profiles: [666],
         favorited_profiles: [999],
       };
+
+      let geoData = newProfile.geolocation
+        .replace("(", "")
+        .replace(")", "")
+        .split(",");
+
       return supertest(app)
         .post("/api/profiles")
         .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
@@ -153,7 +159,10 @@ describe("Profiles Endpoints", function () {
           expect(res.body.profile_pic).to.eql(newProfile.profile_pic);
           expect(res.body.interests).to.eql(newProfile.interests);
           expect(res.body.pronouns).to.eql(newProfile.pronouns);
-          expect(res.body.zipcode).to.eql(newProfile.zipcode);
+          expect(res.body.geolocation).to.eql({
+            x: Number(geoData[0]),
+            y: Number(geoData[1]),
+          });
           expect(res.body.blocked_profiles).to.eql(newProfile.blocked_profiles);
           expect(res.body.favoritedProfiles).to.eql(
             newProfile.favoritedProfiles
@@ -173,7 +182,10 @@ describe("Profiles Endpoints", function () {
               expect(row.profile_pic).to.eql(newProfile.profile_pic);
               expect(row.interests).to.eql(newProfile.interests);
               expect(row.pronouns).to.eql(newProfile.pronouns);
-              expect(row.zipcode).to.eql(newProfile.zipcode);
+              expect(row.geolocation).to.eql({
+                x: Number(geoData[0]),
+                y: Number(geoData[1]),
+              });
               expect(row.blocked_profiles).to.eql(newProfile.blocked_profiles);
               expect(row.favoritedProfiles).to.eql(
                 newProfile.favoritedProfiles
@@ -188,7 +200,7 @@ describe("Profiles Endpoints", function () {
       "profile_pic",
       "interests",
       "pronouns",
-      "zipcode",
+      "geolocation",
     ];
 
     requiredFields.forEach((field) => {
@@ -198,7 +210,7 @@ describe("Profiles Endpoints", function () {
         profile_pic: "test profile_pic",
         interests: ["test interests"],
         pronouns: "test pronouns",
-        zipcode: "test zipcode",
+        geolocation: "40.7043986, -73.9018292",
       };
 
       it(`responds with 400 and an error message when the '${field}' is missing`, () => {
@@ -226,7 +238,7 @@ describe("Profiles Endpoints", function () {
         "profile_pic",
         "interests",
         "pronouns",
-        "zipcode",
+        "geolocation",
         "blocked_profiles",
         "favorited_profiles",
       ];
@@ -238,7 +250,7 @@ describe("Profiles Endpoints", function () {
           profile_pic: "test patch profile_pic",
           interests: ["Gaming"],
           pronouns: "test patch pronouns",
-          zipcode: 11111,
+          geolocation: "40.7043986, -73.9018292",
           blocked_profiles: [1, 2],
           favorited_profiles: [3, 4],
           ...testProfiles[0],
@@ -263,13 +275,23 @@ describe("Profiles Endpoints", function () {
           profile_pic: "updated profile pic",
           interests: ["updated interests"],
           pronouns: "updated pronouns",
-          zipcode: 11111,
+          geolocation: "40.7043986, -73.9018292",
           blocked_profiles: [666],
           favorited_profiles: [999],
         };
+
+        let geoData = updatedProfile.geolocation
+          .replace("(", "")
+          .replace(")", "")
+          .split(",");
+
         const expectedProfile = {
           ...testProfiles[idToUpdate - 1],
           ...updatedProfile,
+          geolocation: {
+            x: Number(geoData[0]),
+            y: Number(geoData[1]),
+          },
         };
         return supertest(app)
           .patch(`/api/profiles/${idToUpdate}`)
@@ -289,9 +311,19 @@ describe("Profiles Endpoints", function () {
           ...testProfiles[0],
           username: "updated profile username",
         };
+
+        let geoData = updatedProfile.geolocation
+          .replace("(", "")
+          .replace(")", "")
+          .split(",");
+
         const expectedProfile = {
           ...testProfiles[1],
           ...updatedProfile,
+          geolocation: {
+            x: Number(geoData[0]),
+            y: Number(geoData[1]),
+          },
         };
         return supertest(app)
           .patch(`/api/profiles/${idToUpdate}`)

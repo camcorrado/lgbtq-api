@@ -49,7 +49,6 @@ describe("Conversations Endpoints", function () {
         const conversationId = 123456;
         return supertest(app)
           .get(`/api/conversations/${conversationId}`)
-          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
           .expect(404, { error: `Conversation doesn't exist` });
       });
     });

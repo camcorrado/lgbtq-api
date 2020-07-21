@@ -3,7 +3,7 @@ const helpers = require("./test-helpers");
 const knex = require("knex");
 const moment = require("moment");
 
-describe.only("Messages Endpoints", function () {
+describe("Messages Endpoints", function () {
   let db;
 
   const { testUsers, testConversations, testMessages } = helpers.makeFixtures();

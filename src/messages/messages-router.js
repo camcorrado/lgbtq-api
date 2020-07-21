@@ -45,6 +45,26 @@ messagesRouter
   .all(checkMessageExists)
   .get((req, res) => {
     res.json(MessagesService.serializeMessage(res.message));
+  })
+  .patch((req, res, next) => {
+    let updatedMessage = {};
+    const { msg_read } = req.body;
+
+    if (msg_read) {
+      updatedMessage.msg_read = msg_read;
+    } else {
+      return res
+        .status(400)
+        .json({ error: `Missing 'msg_read' in request body` });
+    }
+
+    MessagesService.updateMessage(
+      req.app.get("db"),
+      req.params.message_id,
+      updatedMessage
+    )
+      .then(() => res.status(204).end())
+      .catch(next);
   });
 
 async function checkMessageExists(req, res, next) {

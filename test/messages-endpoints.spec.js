@@ -3,7 +3,7 @@ const helpers = require("./test-helpers");
 const knex = require("knex");
 const moment = require("moment");
 
-describe("Messages Endpoints", function () {
+describe.only("Messages Endpoints", function () {
   let db;
 
   const { testUsers, testConversations, testMessages } = helpers.makeFixtures();
@@ -200,6 +200,83 @@ describe("Messages Endpoints", function () {
           .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
           .send(newMessage)
           .expect(400, { error: `Missing '${field}' in request body` });
+      });
+    });
+  });
+
+  describe(`PATCH /api/messages/:messages_id`, () => {
+    context("Given there are messages in the database", () => {
+      beforeEach("insert messages", () =>
+        helpers.seedMessages(db, testUsers, testConversations, testMessages)
+      );
+
+      const requiredFields = ["msg_read"];
+
+      requiredFields.forEach((field) => {
+        const registerAttemptBody = {
+          msg_read: true,
+        };
+
+        it(`responds with 400 required error when '${field}' is missing`, () => {
+          delete registerAttemptBody[field];
+
+          return supertest(app)
+            .patch(`/api/messages/1`)
+            .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
+            .send(registerAttemptBody)
+            .expect(400, { error: `Missing '${field}' in request body` });
+        });
+      });
+
+      it("responds with 204 and updates the message", () => {
+        const idToUpdate = 1;
+        const updatedMessage = {
+          msg_read: true,
+        };
+
+        const expectedMessage = {
+          ...testMessages[idToUpdate - 1],
+          ...updatedMessage,
+        };
+
+        console.log(helpers.makeAuthHeader(testUsers[0]));
+
+        return supertest(app)
+          .patch(`/api/messages/${idToUpdate}`)
+          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
+          .send(updatedMessage)
+          .expect(204)
+          .then((res) =>
+            supertest(app)
+              .get(`/api/messages/${idToUpdate}`)
+              .expect(expectedMessage)
+          );
+      });
+
+      it(`responds with 204 when updating only a subset of fields`, () => {
+        const idToUpdate = 1;
+        const updatedMessage = {
+          ...testMessages[0],
+          msg_read: true,
+        };
+
+        const expectedMessage = {
+          ...testMessages[1],
+          ...updatedMessage,
+        };
+        return supertest(app)
+          .patch(`/api/messages/${idToUpdate}`)
+          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
+          .send({
+            ...updatedMessage,
+            fieldToIgnore: "should not be in GET response",
+          })
+          .expect(204)
+          .then((res) =>
+            supertest(app)
+              .get(`/api/messages/${idToUpdate}`)
+              .expect(expectedMessage)
+          );
       });
     });
   });

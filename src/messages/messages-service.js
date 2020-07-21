@@ -20,6 +20,9 @@ const MessagesService = {
         return rows[0];
       });
   },
+  updateMessage(knex, id, newMessageFields) {
+    return knex("messages").where({ id }).update(newMessageFields);
+  },
   serializeMessage(message) {
     return {
       id: message.id,

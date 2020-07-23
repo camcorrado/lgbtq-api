@@ -139,6 +139,7 @@ describe("Profiles Endpoints", function () {
         geolocation: "40.7043986, -73.9018292",
         blocked_profiles: [666],
         favorited_profiles: [999],
+        deactivated: "false",
       };
 
       let geoData = newProfile.geolocation
@@ -167,6 +168,7 @@ describe("Profiles Endpoints", function () {
           expect(res.body.favoritedProfiles).to.eql(
             newProfile.favoritedProfiles
           );
+          expect(res.body.deactivated).to.eql(newProfile.deactivated);
           expect(res.headers.location).to.eql(`/api/profiles/${res.body.id}`);
         })
         .expect((res) =>
@@ -190,6 +192,7 @@ describe("Profiles Endpoints", function () {
               expect(row.favoritedProfiles).to.eql(
                 newProfile.favoritedProfiles
               );
+              expect(row.deactivated).to.eql(newProfile.deactivated);
             })
         );
     });
@@ -201,6 +204,7 @@ describe("Profiles Endpoints", function () {
       "interests",
       "pronouns",
       "geolocation",
+      "deactivated",
     ];
 
     requiredFields.forEach((field) => {
@@ -211,6 +215,8 @@ describe("Profiles Endpoints", function () {
         interests: ["test interests"],
         pronouns: "test pronouns",
         geolocation: "40.7043986, -73.9018292",
+        deactivated: "false",
+        ...testProfiles[0],
       };
 
       it(`responds with 400 and an error message when the '${field}' is missing`, () => {
@@ -241,6 +247,7 @@ describe("Profiles Endpoints", function () {
         "geolocation",
         "blocked_profiles",
         "favorited_profiles",
+        "deactivated",
       ];
 
       requiredFields.forEach((field) => {
@@ -253,10 +260,12 @@ describe("Profiles Endpoints", function () {
           geolocation: "40.7043986, -73.9018292",
           blocked_profiles: [1, 2],
           favorited_profiles: [3, 4],
+          deactivated: "false",
           ...testProfiles[0],
         };
 
         it(`responds with 400 required error when '${field}' is missing`, () => {
+          console.log({ field });
           delete registerAttemptBody[field];
 
           return supertest(app)
@@ -278,6 +287,7 @@ describe("Profiles Endpoints", function () {
           geolocation: "40.7043986, -73.9018292",
           blocked_profiles: [666],
           favorited_profiles: [999],
+          deactivated: "false",
         };
 
         let geoData = updatedProfile.geolocation

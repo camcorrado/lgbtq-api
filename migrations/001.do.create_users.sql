@@ -3,5 +3,6 @@ CREATE TABLE IF NOT EXISTS users (
     full_name TEXT NOT NULL,
     password TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
-    date_created TIMESTAMP DEFAULT now() NOT NULL
+    date_created TIMESTAMP DEFAULT now() NOT NULL,
+    deactivated TEXT NOT NULL
 );

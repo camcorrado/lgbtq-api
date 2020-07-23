@@ -44,13 +44,14 @@ describe("Users Endpoints", function () {
     context(`User Validation`, () => {
       beforeEach("insert users", () => helpers.seedUsers(db, testUsers));
 
-      const requiredFields = ["email", "password", "full_name"];
+      const requiredFields = ["email", "password", "full_name", "deactivated"];
 
       requiredFields.forEach((field) => {
         const registerAttemptBody = {
           full_name: "test full_name",
           email: "test email",
           password: "test password",
+          deactivated: "false",
         };
 
         it(`responds with 400 required error when '${field}' is missing`, () => {
@@ -67,6 +68,7 @@ describe("Users Endpoints", function () {
             full_name: "test full_name",
             email: "test email",
             password: "1234567",
+            deactivated: "false",
           };
 
           return supertest(app)
@@ -82,6 +84,7 @@ describe("Users Endpoints", function () {
             full_name: "test full_name",
             email: "test email",
             password: "*".repeat(73),
+            deactivated: "false",
           };
 
           return supertest(app)
@@ -95,6 +98,7 @@ describe("Users Endpoints", function () {
             full_name: "test full_name",
             email: "test email",
             password: " 1Aa!2Bb@",
+            deactivated: "false",
           };
 
           return supertest(app)
@@ -110,6 +114,7 @@ describe("Users Endpoints", function () {
             full_name: "test full_name",
             email: "test email",
             password: "1Aa!2Bb@ ",
+            deactivated: "false",
           };
 
           return supertest(app)
@@ -125,6 +130,7 @@ describe("Users Endpoints", function () {
             full_name: "test full_name",
             email: "test email",
             password: "11AAaabb",
+            deactivated: "false",
           };
 
           return supertest(app)
@@ -140,6 +146,7 @@ describe("Users Endpoints", function () {
             email: testUser.email,
             password: "11AAaa!!",
             full_name: "test full_name",
+            deactivated: "false",
           };
 
           return supertest(app)
@@ -155,6 +162,7 @@ describe("Users Endpoints", function () {
             email: "test email",
             password: "11AAaa!!",
             full_name: "test full_name",
+            deactivated: "false",
           };
           return supertest(app)
             .post("/api/users")
@@ -164,6 +172,7 @@ describe("Users Endpoints", function () {
               expect(res.body).to.have.property("id");
               expect(res.body.email).to.eql(newUser.email);
               expect(res.body.full_name).to.eql(newUser.full_name);
+              expect(res.body.deactivated).to.eql(newUser.deactivated);
               expect(res.body).to.not.have.property("password");
               expect(res.headers.location).to.eql(`/api/users/${res.body.id}`);
               const expectedDate = moment(new Date()).format("ddd MMM DD YYYY");
@@ -181,6 +190,7 @@ describe("Users Endpoints", function () {
                 .then((row) => {
                   expect(row.email).to.eql(newUser.email);
                   expect(row.full_name).to.eql(newUser.full_name);
+                  expect(row.deactivated).to.eql(newUser.deactivated);
                   const expectedDate = moment(new Date()).format(
                     "ddd MMM DD YYYY"
                   );
@@ -204,13 +214,14 @@ describe("Users Endpoints", function () {
     context("Given there are users in the database", () => {
       beforeEach("insert users", () => helpers.seedUsers(db, testUsers));
 
-      const requiredFields = ["full_name", "password", "email"];
+      const requiredFields = ["full_name", "password", "email", "deactivated"];
 
       requiredFields.forEach((field) => {
         const registerAttemptBody = {
           full_name: "test full_name",
           password: "Password123!",
           email: "email@email.com",
+          deactivated: "false",
           ...testUser,
         };
 
@@ -230,6 +241,7 @@ describe("Users Endpoints", function () {
           full_name: "test full_name",
           password: "1234567",
           email: "email@email.com",
+          deactivated: "false",
         };
 
         return supertest(app)
@@ -244,6 +256,7 @@ describe("Users Endpoints", function () {
           full_name: "test full_name",
           password: "*".repeat(73),
           email: "email@email.com",
+          deactivated: "false",
         };
 
         return supertest(app)
@@ -258,6 +271,7 @@ describe("Users Endpoints", function () {
           full_name: "test full_name",
           password: " 1Aa!2Bb@",
           email: "email@email.com",
+          deactivated: "false",
         };
 
         return supertest(app)
@@ -274,6 +288,7 @@ describe("Users Endpoints", function () {
           full_name: "test full_name",
           password: "1Aa!2Bb@ ",
           email: "email@email.com",
+          deactivated: "false",
         };
 
         return supertest(app)
@@ -290,6 +305,7 @@ describe("Users Endpoints", function () {
           full_name: "test full_name",
           password: "11AAaabb",
           email: "email@email.com",
+          deactivated: "false",
         };
 
         return supertest(app)
@@ -306,6 +322,7 @@ describe("Users Endpoints", function () {
           full_name: "John Updated",
           password: "Password123!",
           email: "email@email.com",
+          deactivated: "false",
           ...testUser,
         };
 
@@ -318,7 +335,7 @@ describe("Users Endpoints", function () {
 
       it(`responds with 204 when updating only a subset of fields`, () => {
         const updatedUser = {
-          full_name: "John Updated",
+          deactivated: "true",
           ...testUser,
         };
 

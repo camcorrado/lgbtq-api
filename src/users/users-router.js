@@ -11,13 +11,12 @@ usersRouter
     res.json(UsersService.serializeUser(req.user));
   })
   .post((req, res, next) => {
-    const { password, full_name, email } = req.body;
-
-    for (const field of ["full_name", "email", "password"]) {
+    const { password, full_name, email, deactivated } = req.body;
+    for (const field of ["full_name", "email", "password", "deactivated"]) {
       if (!req.body[field]) {
-        return res
-          .status(400)
-          .json({ error: `Missing '${field}' in request body` });
+        return res.status(400).json({
+          error: `Missing '${field}' in request body`,
+        });
       }
     }
 
@@ -38,6 +37,7 @@ usersRouter
             password: hashedPassword,
             full_name,
             email,
+            deactivated,
           };
 
           return UsersService.insertUser(req.app.get("db"), newUser).then(
@@ -53,10 +53,9 @@ usersRouter
       .catch(next);
   })
   .patch(requireAuth, (req, res, next) => {
-    let updatedUser = {};
-    const { id, full_name, email, password } = req.body;
+    const { id, full_name, email, password, deactivated } = req.body;
 
-    for (const field of ["full_name", "email", "password"]) {
+    for (const field of ["full_name", "email", "password", "deactivated"]) {
       if (!req.body[field]) {
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
@@ -65,6 +64,7 @@ usersRouter
     }
 
     const passwordError = UsersService.validatePassword(password);
+
     if (passwordError) {
       return res.status(400).json({
         error: passwordError,
@@ -74,8 +74,10 @@ usersRouter
     return UsersService.hashPassword(password).then((hashedPassword) => {
       const updatedUser = {
         password: hashedPassword,
+        id,
         full_name,
         email,
+        deactivated,
       };
 
       return UsersService.updateUser(req.app.get("db"), id, updatedUser)

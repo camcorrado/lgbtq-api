@@ -34,6 +34,7 @@ const ProfilesService = {
       geolocation: profile.geolocation,
       blocked_profiles: profile.blocked_profiles,
       favorited_profiles: profile.favorited_profiles,
+      deactivated: profile.deactivated,
     };
   },
 };

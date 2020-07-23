@@ -20,6 +20,7 @@ function makeUsersArray() {
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
+      deactivated: "false",
     },
     {
       id: 2,
@@ -29,6 +30,7 @@ function makeUsersArray() {
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
+      deactivated: "false",
     },
     {
       id: 3,
@@ -38,6 +40,7 @@ function makeUsersArray() {
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
+      deactivated: "false",
     },
     {
       id: 4,
@@ -47,6 +50,7 @@ function makeUsersArray() {
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
+      deactivated: "false",
     },
   ];
 }
@@ -64,6 +68,7 @@ function makeProfilesArray(users) {
       geolocation: "(10, -10)",
       blocked_profiles: [1, 2, 3],
       favorited_profiles: [4, 5, 6],
+      deactivated: "false",
     },
     {
       id: 2,
@@ -76,6 +81,7 @@ function makeProfilesArray(users) {
       geolocation: "(20, -20)",
       blocked_profiles: [1, 2, 3],
       favorited_profiles: [4, 5, 6],
+      deactivated: "false",
     },
     {
       id: 3,
@@ -88,6 +94,7 @@ function makeProfilesArray(users) {
       geolocation: "(30, -30)",
       blocked_profiles: [1, 2, 3],
       favorited_profiles: [4, 5, 6],
+      deactivated: "false",
     },
     {
       id: 4,
@@ -100,6 +107,7 @@ function makeProfilesArray(users) {
       geolocation: "(40, -40)",
       blocked_profiles: [1, 2, 3],
       favorited_profiles: [4, 5, 6],
+      deactivated: "false",
     },
   ];
 }
@@ -112,11 +120,17 @@ function makeConversationsArray() {
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
+      new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
+        "ddd MMM DD YYYY"
+      ),
     },
     {
       id: 2,
       users: [1, 2],
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
+        "ddd MMM DD YYYY"
+      ),
+      new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
     },
@@ -126,11 +140,17 @@ function makeConversationsArray() {
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
+      new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
+        "ddd MMM DD YYYY"
+      ),
     },
     {
       id: 4,
       users: [3, 4],
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
+        "ddd MMM DD YYYY"
+      ),
+      new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
     },
@@ -144,7 +164,7 @@ function makeMessagesArray(users, conversations) {
       conversation_id: conversations[0].id,
       user_id: users[0].id,
       content: "Hi",
-      msg_read: false,
+      msg_read: "false",
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
@@ -154,7 +174,7 @@ function makeMessagesArray(users, conversations) {
       conversation_id: conversations[1].id,
       user_id: users[1].id,
       content: "Hi",
-      msg_read: false,
+      msg_read: "false",
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
@@ -164,7 +184,7 @@ function makeMessagesArray(users, conversations) {
       conversation_id: conversations[2].id,
       user_id: users[2].id,
       content: "Hi",
-      msg_read: true,
+      msg_read: "true",
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
@@ -174,7 +194,7 @@ function makeMessagesArray(users, conversations) {
       conversation_id: conversations[3].id,
       user_id: users[3].id,
       content: "Hi",
-      msg_read: true,
+      msg_read: "true",
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
         "ddd MMM DD YYYY"
       ),
@@ -244,6 +264,7 @@ function makeExpectedUser(user) {
     full_name: user.full_name,
     email: user.email,
     date_created: moment(user.date_created).format("ddd MMM DD YYYY"),
+    deactivated: user.deactivated,
   };
 }
 
@@ -263,6 +284,7 @@ function makeExpectedProfile(profile) {
     geolocation: { x: Number(geoData[0]), y: Number(geoData[1]) },
     blocked_profiles: profile.blocked_profiles,
     favorited_profiles: profile.favorited_profiles,
+    deactivated: profile.deactivated,
   };
 }
 
@@ -271,6 +293,9 @@ function makeExpectedConversation(conversation) {
     id: conversation.id,
     users: conversation.users,
     date_created: moment(conversation.date_created).format("ddd MMM DD YYYY"),
+    new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
+      "ddd MMM DD YYYY"
+    ),
   };
 }
 
@@ -297,6 +322,7 @@ function makeMaliciousProfile(user) {
     geolocation: "40, -73",
     blocked_profiles: [666],
     favorited_profiles: [999],
+    deactivated: "false",
   };
   const expectedProfile = {
     ...maliciousProfile,
@@ -318,7 +344,7 @@ function makeMaliciousMessage(conversation, user) {
     conversation_id: conversation.id,
     user_id: user.id,
     content: 'Naughty naughty very naughty <script>alert("xss");</script>',
-    msg_read: false,
+    msg_read: "false",
     date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
       "ddd MMM DD YYYY"
     ),

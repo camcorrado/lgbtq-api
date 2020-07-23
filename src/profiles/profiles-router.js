@@ -24,6 +24,7 @@ profilesRouter
       geolocation,
       blocked_profiles,
       favorited_profiles,
+      deactivated,
     } = req.body;
     const newProfile = {
       username,
@@ -34,6 +35,7 @@ profilesRouter
       geolocation,
       blocked_profiles,
       favorited_profiles,
+      deactivated,
     };
 
     for (const [key, value] of Object.entries(newProfile)) {
@@ -73,6 +75,7 @@ profilesRouter
       geolocation,
       blocked_profiles,
       favorited_profiles,
+      deactivated,
     } = req.body;
 
     if (username) {
@@ -135,6 +138,14 @@ profilesRouter
       return res
         .status(400)
         .json({ error: `Missing 'favorited_profiles' in request body` });
+    }
+
+    if (deactivated) {
+      updatedProfile.deactivated = deactivated;
+    } else {
+      return res
+        .status(400)
+        .json({ error: `Missing 'deactivated' in request body` });
     }
 
     ProfilesService.updateProfile(

@@ -37,6 +37,7 @@ const UsersService = {
       date_created: moment(new Date(user.date_created)).format(
         "ddd MMM DD YYYY"
       ),
+      deactivated: user.deactivated,
     };
   },
   insertUser(knex, newUser) {

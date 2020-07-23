@@ -3,6 +3,6 @@ CREATE TABLE IF NOT EXISTS messages (
     conversation_id INTEGER REFERENCES conversations(id) ON DELETE CASCADE NOT NULL,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     content TEXT NOT NULL,
-    msg_read BOOLEAN DEFAULT false NOT NULL,
+    msg_read TEXT NOT NULL,
     date_created TIMESTAMP DEFAULT now() NOT NULL
 );

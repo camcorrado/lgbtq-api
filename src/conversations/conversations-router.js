@@ -20,8 +20,8 @@ conversationsRouter
       .catch(next);
   })
   .post(requireAuth, (req, res, next) => {
-    const { users } = req.body;
-    const newConversation = { users };
+    const { users, new_msg } = req.body;
+    const newConversation = { users, new_msg };
     for (const [key, value] of Object.entries(newConversation)) {
       if (value == null) {
         return res
@@ -47,6 +47,30 @@ conversationsRouter
     MessagesService.getByConversationId(req.app.get("db"), res.conversation.id)
       .then((messages) => {
         res.json(messages.map(MessagesService.serializeMessage));
+      })
+      .catch(next);
+  })
+  .patch(requireAuth, (req, res, next) => {
+    const { users, new_msg } = req.body;
+    const newConversation = { users, new_msg };
+    for (const [key, value] of Object.entries(newConversation)) {
+      if (value == null) {
+        return res
+          .status(400)
+          .json({ error: `Missing '${key}' in request body` });
+      }
+    }
+
+    ConversationsService.updateConversation(
+      req.app.get("db"),
+      req.params.conversation_id,
+      newConversation
+    )
+      .then((conversation) => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `/${conversation.id}`))
+          .json(ConversationsService.serializeConversation(conversation));
       })
       .catch(next);
   })

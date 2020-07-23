@@ -8,5 +8,6 @@ CREATE TABLE IF NOT EXISTS profiles (
     pronouns TEXT NOT NULL,
     geolocation POINT NOT NULL,
     blocked_profiles INTEGER[],
-    favorited_profiles INTEGER[]
-);
+    favorited_profiles INTEGER[],
+    deactivated TEXT NOT NULL
+    );

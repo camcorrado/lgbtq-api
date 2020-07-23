@@ -16,6 +16,9 @@ const ConversationsService = {
         return rows[0];
       });
   },
+  updateConversation(knex, id, newConversationFields) {
+    return knex("conversations").where({ id }).update(newConversationFields);
+  },
   serializeConversation(conversation) {
     return {
       id: conversation.id,
@@ -23,6 +26,7 @@ const ConversationsService = {
       date_created: moment(new Date(conversation.date_created)).format(
         "ddd MMM DD YYYY"
       ),
+      new_msg: moment(new Date(conversation.new_msg)).format("ddd MMM DD YYYY"),
     };
   },
   deleteConversation(knex, id) {

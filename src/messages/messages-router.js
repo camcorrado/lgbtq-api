@@ -15,8 +15,8 @@ messagesRouter
       .catch(next);
   })
   .post(requireAuth, (req, res, next) => {
-    const { content } = req.body;
-    const newMessage = { content };
+    const { content, msg_read } = req.body;
+    const newMessage = { content, msg_read };
 
     for (const [key, value] of Object.entries(newMessage)) {
       if (value == null) {
@@ -41,7 +41,6 @@ messagesRouter
 
 messagesRouter
   .route("/:message_id")
-  .all(requireAuth)
   .all(checkMessageExists)
   .get((req, res) => {
     res.json(MessagesService.serializeMessage(res.message));

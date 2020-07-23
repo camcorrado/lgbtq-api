@@ -3,7 +3,7 @@ const helpers = require("./test-helpers");
 const knex = require("knex");
 const moment = require("moment");
 
-describe("Messages Endpoints", function () {
+describe.only("Messages Endpoints", function () {
   let db;
 
   const { testUsers, testConversations, testMessages } = helpers.makeFixtures();
@@ -145,7 +145,7 @@ describe("Messages Endpoints", function () {
         conversation_id: testConversation.id,
         user_id: testUser.id,
         content: "test content",
-        msg_read: false,
+        msg_read: "false",
       };
       return supertest(app)
         .post("/api/messages")
@@ -189,6 +189,7 @@ describe("Messages Endpoints", function () {
 
     requiredFields.forEach((field) => {
       const newMessage = {
+        msg_read: "false",
         content: "test content",
       };
 
@@ -214,7 +215,7 @@ describe("Messages Endpoints", function () {
 
       requiredFields.forEach((field) => {
         const registerAttemptBody = {
-          msg_read: true,
+          msg_read: "true",
         };
 
         it(`responds with 400 required error when '${field}' is missing`, () => {
@@ -222,7 +223,6 @@ describe("Messages Endpoints", function () {
 
           return supertest(app)
             .patch(`/api/messages/1`)
-            .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
             .send(registerAttemptBody)
             .expect(400, { error: `Missing '${field}' in request body` });
         });
@@ -231,7 +231,7 @@ describe("Messages Endpoints", function () {
       it("responds with 204 and updates the message", () => {
         const idToUpdate = 1;
         const updatedMessage = {
-          msg_read: true,
+          msg_read: "true",
         };
 
         const expectedMessage = {
@@ -239,11 +239,8 @@ describe("Messages Endpoints", function () {
           ...updatedMessage,
         };
 
-        console.log(helpers.makeAuthHeader(testUsers[0]));
-
         return supertest(app)
           .patch(`/api/messages/${idToUpdate}`)
-          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
           .send(updatedMessage)
           .expect(204)
           .then((res) =>
@@ -257,7 +254,7 @@ describe("Messages Endpoints", function () {
         const idToUpdate = 1;
         const updatedMessage = {
           ...testMessages[0],
-          msg_read: true,
+          msg_read: "true",
         };
 
         const expectedMessage = {
@@ -266,7 +263,6 @@ describe("Messages Endpoints", function () {
         };
         return supertest(app)
           .patch(`/api/messages/${idToUpdate}`)
-          .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
           .send({
             ...updatedMessage,
             fieldToIgnore: "should not be in GET response",

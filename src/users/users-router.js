@@ -54,32 +54,39 @@ usersRouter
   })
   .patch(requireAuth, (req, res, next) => {
     let updatedUser = {};
-    const { id, full_name, password } = req.body;
+    const { id, full_name, email, password } = req.body;
 
-    if (full_name) {
-      updatedUser.full_name = full_name;
-    } else {
-      return res
-        .status(400)
-        .json({ error: `Missing 'full_name' in request body` });
-    }
-
-    if (password) {
-      const passwordError = UsersService.validatePassword(password);
-      if (passwordError) {
-        return res.status(400).json({ error: passwordError });
-      } else {
-        updatedUser.password = UsersService.hashPassword(password);
+    for (const field of ["full_name", "email", "password"]) {
+      if (!req.body[field]) {
+        return res.status(400).json({
+          error: `Missing '${field}' in request body`,
+        });
       }
-    } else {
-      return res
-        .status(400)
-        .json({ error: `Missing 'password' in request body` });
     }
 
-    UsersService.updateUser(req.app.get("db"), id, updatedUser)
-      .then(() => res.status(204).end())
-      .catch(next);
+    const passwordError = UsersService.validatePassword(password);
+    if (passwordError) {
+      return res.status(400).json({
+        error: passwordError,
+      });
+    }
+
+    return UsersService.hashPassword(password).then((hashedPassword) => {
+      const updatedUser = {
+        password: hashedPassword,
+        full_name,
+        email,
+      };
+
+      return UsersService.updateUser(req.app.get("db"), id, updatedUser)
+        .then((user) => {
+          res
+            .status(204)
+            .location(path.posix.join(req.originalUrl, `/${user.id}`))
+            .json(UsersService.serializeUser(user));
+        })
+        .catch(next);
+    });
   });
 
 module.exports = usersRouter;

@@ -1,5 +1,6 @@
 const ConversationsService = require("./conversations-service");
 const MessagesService = require("../messages/messages-service");
+const ProfilesService = require("../profiles/profiles-service");
 const express = require("express");
 const path = require("path");
 const { requireAuth } = require("../middleware/jwt-auth");
@@ -9,14 +10,24 @@ const conversationsRouter = express.Router();
 conversationsRouter
   .route("/")
   .get(requireAuth, (req, res, next) => {
-    ConversationsService.getAllConversations(req.app.get("db"))
-      .then((conversations) => {
-        res.json(
-          conversations
-            .map(ConversationsService.serializeConversation)
-            .filter((conversation) => conversation.users.includes(req.user.id))
+    ProfilesService.getProfileForUser(req.app.get("db"), req.user.id)
+      .then((profile) => {
+        const profileInfo = ProfilesService.serializeProfile(profile);
+        const profileId = profileInfo.id;
+
+        ConversationsService.getAllConversations(req.app.get("db")).then(
+          (conversations) => {
+            res.json(
+              conversations
+                .map(ConversationsService.serializeConversation)
+                .filter((conversation) =>
+                  conversation.users.includes(profileId)
+                )
+            );
+          }
         );
       })
+
       .catch(next);
   })
   .post(requireAuth, (req, res, next) => {
@@ -71,16 +82,6 @@ conversationsRouter
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${conversation.id}`))
           .json(ConversationsService.serializeConversation(conversation));
-      })
-      .catch(next);
-  })
-  .delete((req, res, next) => {
-    ConversationsService.deleteConversation(
-      req.app.get("db"),
-      req.params.conversation_id
-    )
-      .then(() => {
-        res.status(204).end();
       })
       .catch(next);
   });

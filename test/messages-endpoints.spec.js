@@ -6,7 +6,12 @@ const moment = require("moment");
 describe("Messages Endpoints", function () {
   let db;
 
-  const { testUsers, testConversations, testMessages } = helpers.makeFixtures();
+  const {
+    testUsers,
+    testProfiles,
+    testConversations,
+    testMessages,
+  } = helpers.makeFixtures();
 
   before("make knex instance", () => {
     db = knex({
@@ -31,7 +36,13 @@ describe("Messages Endpoints", function () {
 
     context("Given there are messages in the database", () => {
       beforeEach("insert messages", () =>
-        helpers.seedMessages(db, testUsers, testConversations, testMessages)
+        helpers.seedMessages(
+          db,
+          testUsers,
+          testProfiles,
+          testConversations,
+          testMessages
+        )
       );
 
       it("responds with 200 and all of the messages", () => {
@@ -47,6 +58,7 @@ describe("Messages Endpoints", function () {
     context(`Given an XSS attack message`, () => {
       const testConversation = helpers.makeConversationsArray()[1];
       const testUser = helpers.makeUsersArray()[1];
+      const testProfile = helpers.makeProfilesArray(testUsers)[1];
       const {
         maliciousMessage,
         expectedMessage,
@@ -56,6 +68,7 @@ describe("Messages Endpoints", function () {
         return helpers.seedMaliciousMessage(
           db,
           testUser,
+          testProfile,
           testConversation,
           maliciousMessage
         );
@@ -75,7 +88,13 @@ describe("Messages Endpoints", function () {
   describe(`GET /api/messages/:message_id`, () => {
     context(`Given no messages`, () => {
       beforeEach("insert messages", () =>
-        helpers.seedMessages(db, testUsers, testConversations, testMessages)
+        helpers.seedMessages(
+          db,
+          testUsers,
+          testProfiles,
+          testConversations,
+          testMessages
+        )
       );
 
       it(`responds with 404`, () => {
@@ -89,7 +108,13 @@ describe("Messages Endpoints", function () {
 
     context("Given there are messages in the database", () => {
       beforeEach("insert messages", () =>
-        helpers.seedMessages(db, testUsers, testConversations, testMessages)
+        helpers.seedMessages(
+          db,
+          testUsers,
+          testProfiles,
+          testConversations,
+          testMessages
+        )
       );
 
       it("responds with 200 and the specified message", () => {
@@ -108,6 +133,7 @@ describe("Messages Endpoints", function () {
     context(`Given an XSS attack message`, () => {
       const testUser = helpers.makeUsersArray()[1];
       const testConversation = helpers.makeConversationsArray()[1];
+      const testProfile = helpers.makeProfilesArray(testUsers)[1];
       const {
         maliciousMessage,
         expectedMessage,
@@ -116,6 +142,7 @@ describe("Messages Endpoints", function () {
         return helpers.seedMaliciousMessage(
           db,
           testUser,
+          testProfile,
           testConversation,
           maliciousMessage
         );
@@ -135,7 +162,13 @@ describe("Messages Endpoints", function () {
 
   describe(`POST /api/messages`, () => {
     beforeEach("insert messages", () =>
-      helpers.seedMessages(db, testUsers, testConversations, testMessages)
+      helpers.seedMessages(
+        db,
+        testUsers,
+        testProfiles,
+        testConversations,
+        testMessages
+      )
     );
 
     it(`creates a messages, responding with 201 and the new message`, function () {
@@ -208,7 +241,13 @@ describe("Messages Endpoints", function () {
   describe(`PATCH /api/messages/:messages_id`, () => {
     context("Given there are messages in the database", () => {
       beforeEach("insert messages", () =>
-        helpers.seedMessages(db, testUsers, testConversations, testMessages)
+        helpers.seedMessages(
+          db,
+          testUsers,
+          testProfiles,
+          testConversations,
+          testMessages
+        )
       );
 
       const requiredFields = ["msg_read"];

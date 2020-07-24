@@ -8,7 +8,7 @@ const ProfilesService = {
     return knex.from("profiles").select("*").where("id", id).first();
   },
   getProfileForUser(knex, id) {
-    return knex.from("profiles").select("*").where("user_id", id);
+    return knex.from("profiles").select("*").where("user_id", id).first();
   },
   insertProfile(knex, newProfile) {
     return knex

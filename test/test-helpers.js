@@ -238,9 +238,9 @@ function seedProfiles(db, users, profiles) {
   });
 }
 
-function seedConversations(db, users, conversations) {
+function seedConversations(db, users, profiles, conversations) {
   return db.transaction(async (trx) => {
-    await seedUsers(trx, users);
+    await seedProfiles(trx, users, profiles);
     await trx.into("conversations").insert(conversations);
     await trx.raw(`SELECT setval('conversations_id_seq', ?)`, [
       conversations[conversations.length - 1].id,
@@ -248,9 +248,9 @@ function seedConversations(db, users, conversations) {
   });
 }
 
-function seedMessages(db, users, conversations, messages) {
+function seedMessages(db, users, profiles, conversations, messages) {
   return db.transaction(async (trx) => {
-    await seedConversations(trx, users, conversations);
+    await seedConversations(trx, users, profiles, conversations);
     await trx.into("messages").insert(messages);
     await trx.raw(`SELECT setval('messages_id_seq', ?)`, [
       messages[messages.length - 1].id,
@@ -366,8 +366,8 @@ function seedMaliciousProfile(db, user, profile) {
   );
 }
 
-function seedMaliciousMessage(db, user, conversation, message) {
-  return seedConversations(db, [user], [conversation]).then(() =>
+function seedMaliciousMessage(db, user, profile, conversation, message) {
+  return seedConversations(db, [user], [profile], [conversation]).then(() =>
     db.into("messages").insert([message])
   );
 }

@@ -7,7 +7,12 @@ const { makeConversationsArray } = require("./test-helpers");
 describe("Conversations Endpoints", function () {
   let db;
 
-  const { testUsers, testConversations, testMessages } = helpers.makeFixtures();
+  const {
+    testUsers,
+    testProfiles,
+    testConversations,
+    testMessages,
+  } = helpers.makeFixtures();
 
   before("make knex instance", () => {
     db = knex({
@@ -26,7 +31,12 @@ describe("Conversations Endpoints", function () {
   describe(`GET /api/conversations`, () => {
     context("Given there are conversations in the database", () => {
       beforeEach("insert conversations", () =>
-        helpers.seedConversations(db, testUsers, testConversations)
+        helpers.seedConversations(
+          db,
+          testUsers,
+          testProfiles,
+          testConversations
+        )
       );
 
       it("responds with 200 and all of the user's conversations", () => {
@@ -56,7 +66,13 @@ describe("Conversations Endpoints", function () {
 
     context("Given there are conversations in the database", () => {
       beforeEach("insert conversations", () =>
-        helpers.seedMessages(db, testUsers, testConversations, testMessages)
+        helpers.seedMessages(
+          db,
+          testUsers,
+          testProfiles,
+          testConversations,
+          testMessages
+        )
       );
 
       it("responds with 200 and the specified conversation", () => {
@@ -74,7 +90,7 @@ describe("Conversations Endpoints", function () {
 
   describe(`POST /api/conversations`, () => {
     beforeEach("insert conversations", () =>
-      helpers.seedConversations(db, testUsers, testConversations)
+      helpers.seedConversations(db, testUsers, testProfiles, testConversations)
     );
 
     it(`creates a conversation, responding with 201 and the new conversation`, function () {
@@ -130,32 +146,6 @@ describe("Conversations Endpoints", function () {
           .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
           .send(newConversation)
           .expect(400, { error: `Missing '${field}' in request body` });
-      });
-    });
-  });
-
-  describe(`DELETE /api/conversations/:conversationId`, () => {
-    context("Given there are conversations in the database", () => {
-      const testConversations = makeConversationsArray();
-
-      beforeEach("insert conversations", () =>
-        helpers.seedConversations(db, testUsers, testConversations)
-      );
-
-      it("responds with 204 and removes the conversation", () => {
-        const idToRemove = 2;
-        const expectedConversations = testConversations.filter(
-          (convo) => convo.id !== idToRemove
-        );
-        return supertest(app)
-          .delete(`/api/conversations/${idToRemove}`)
-          .expect(204)
-          .then(() =>
-            supertest(app)
-              .get(`/api/conversations`)
-              .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
-              .expect([expectedConversations[0]])
-          );
       });
     });
   });

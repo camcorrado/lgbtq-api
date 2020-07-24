@@ -26,7 +26,9 @@ const ConversationsService = {
       date_created: moment(new Date(conversation.date_created)).format(
         "ddd MMM DD YYYY"
       ),
-      new_msg: moment(new Date(conversation.new_msg)).format("ddd MMM DD YYYY"),
+      new_msg: moment(new Date(conversation.new_msg)).format(
+        "ddd MMM DD YYYY LTS"
+      ),
     };
   },
   deleteConversation(knex, id) {

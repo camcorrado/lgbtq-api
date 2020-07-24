@@ -30,7 +30,7 @@ const MessagesService = {
       user_id: message.user_id,
       content: xss(message.content),
       msg_read: message.msg_read,
-      date_created: moment(message.date_created).format("ddd MMM DD YYYY"),
+      date_created: moment(message.date_created).format("ddd MMM DD YYYY LTS"),
     };
   },
 };

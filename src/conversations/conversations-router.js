@@ -84,6 +84,16 @@ conversationsRouter
           .json(ConversationsService.serializeConversation(conversation));
       })
       .catch(next);
+  })
+  .delete((req, res, next) => {
+    ConversationsService.deleteConversation(
+      req.app.get("db"),
+      req.params.conversation_id
+    )
+      .then(() => {
+        res.status(204).end();
+      })
+      .catch(next);
   });
 
 async function checkConversationExists(req, res, next) {

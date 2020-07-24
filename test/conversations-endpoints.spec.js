@@ -149,4 +149,36 @@ describe("Conversations Endpoints", function () {
       });
     });
   });
+
+  describe(`DELETE /api/conversations/:conversationId`, () => {
+    context("Given there are conversations in the database", () => {
+      const testConversations = makeConversationsArray();
+
+      beforeEach("insert conversations", () =>
+        helpers.seedConversations(
+          db,
+          testUsers,
+          testProfiles,
+          testConversations
+        )
+      );
+
+      it("responds with 204 and removes the conversation", () => {
+        const idToRemove = 2;
+        const expectedConversations = testConversations.filter(
+          (convo) => convo.id !== idToRemove
+        );
+        console.log({ expectedConversations });
+        return supertest(app)
+          .delete(`/api/conversations/${idToRemove}`)
+          .expect(204)
+          .then(() =>
+            supertest(app)
+              .get(`/api/conversations`)
+              .set("Authorization", helpers.makeAuthHeader(testUsers[0]))
+              .expect([expectedConversations[0]])
+          );
+      });
+    });
+  });
 });

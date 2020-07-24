@@ -1,6 +1,7 @@
 const express = require("express");
 const MessagesService = require("./messages-service");
 const path = require("path");
+const ProfilesService = require("../profiles/profiles-service");
 const { requireAuth } = require("../middleware/jwt-auth");
 
 const messagesRouter = express.Router();
@@ -26,16 +27,24 @@ messagesRouter
       }
     }
 
-    newMessage.user_id = req.user.id;
-    newMessage.conversation_id = req.body.conversation_id;
+    ProfilesService.getProfileForUser(req.app.get("db"), req.user.id)
+      .then((profile) => {
+        const profileInfo = ProfilesService.serializeProfile(profile);
+        const profileId = profileInfo.id;
 
-    MessagesService.insertMessage(req.app.get("db"), newMessage)
-      .then((message) => {
-        res
-          .status(201)
-          .location(path.posix.join(req.originalUrl, `/${message.id}`))
-          .json(MessagesService.serializeMessage(message));
+        newMessage.user_id = profileId;
+        newMessage.conversation_id = req.body.conversation_id;
+
+        MessagesService.insertMessage(req.app.get("db"), newMessage).then(
+          (message) => {
+            res
+              .status(201)
+              .location(path.posix.join(req.originalUrl, `/${message.id}`))
+              .json(MessagesService.serializeMessage(message));
+          }
+        );
       })
+
       .catch(next);
   });
 

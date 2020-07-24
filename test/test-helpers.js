@@ -121,7 +121,7 @@ function makeConversationsArray() {
         "ddd MMM DD YYYY"
       ),
       new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-        "ddd MMM DD YYYY"
+        "ddd MMM DD YYYY LTS"
       ),
     },
     {
@@ -131,7 +131,7 @@ function makeConversationsArray() {
         "ddd MMM DD YYYY"
       ),
       new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-        "ddd MMM DD YYYY"
+        "ddd MMM DD YYYY LTS"
       ),
     },
     {
@@ -141,7 +141,7 @@ function makeConversationsArray() {
         "ddd MMM DD YYYY"
       ),
       new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-        "ddd MMM DD YYYY"
+        "ddd MMM DD YYYY LTS"
       ),
     },
     {
@@ -151,7 +151,7 @@ function makeConversationsArray() {
         "ddd MMM DD YYYY"
       ),
       new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-        "ddd MMM DD YYYY"
+        "ddd MMM DD YYYY LTS"
       ),
     },
   ];
@@ -166,7 +166,7 @@ function makeMessagesArray(users, conversations) {
       content: "Hi",
       msg_read: "false",
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-        "ddd MMM DD YYYY"
+        "ddd MMM DD YYYY LTS"
       ),
     },
     {
@@ -176,7 +176,7 @@ function makeMessagesArray(users, conversations) {
       content: "Hi",
       msg_read: "false",
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-        "ddd MMM DD YYYY"
+        "ddd MMM DD YYYY LTS"
       ),
     },
     {
@@ -186,7 +186,7 @@ function makeMessagesArray(users, conversations) {
       content: "Hi",
       msg_read: "true",
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-        "ddd MMM DD YYYY"
+        "ddd MMM DD YYYY LTS"
       ),
     },
     {
@@ -196,7 +196,7 @@ function makeMessagesArray(users, conversations) {
       content: "Hi",
       msg_read: "true",
       date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-        "ddd MMM DD YYYY"
+        "ddd MMM DD YYYY LTS"
       ),
     },
   ];
@@ -294,7 +294,7 @@ function makeExpectedConversation(conversation) {
     users: conversation.users,
     date_created: moment(conversation.date_created).format("ddd MMM DD YYYY"),
     new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-      "ddd MMM DD YYYY"
+      "ddd MMM DD YYYY LTS"
     ),
   };
 }
@@ -306,7 +306,7 @@ function makeExpectedMessage(message) {
     user_id: message.user_id,
     content: message.content,
     msg_read: message.msg_read,
-    date_created: moment(message.date_created).format("ddd MMM DD YYYY"),
+    date_created: moment(message.date_created).format("ddd MMM DD YYYY LTS"),
   };
 }
 
@@ -346,7 +346,7 @@ function makeMaliciousMessage(conversation, user) {
     content: 'Naughty naughty very naughty <script>alert("xss");</script>',
     msg_read: "false",
     date_created: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-      "ddd MMM DD YYYY"
+      "ddd MMM DD YYYY LTS"
     ),
   };
   const expectedMessage = {

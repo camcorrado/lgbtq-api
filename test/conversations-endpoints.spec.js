@@ -33,6 +33,7 @@ describe("Conversations Endpoints", function () {
         const expectedConversations = testConversations.map((conversation) =>
           helpers.makeExpectedConversation(conversation)
         );
+
         return supertest(app)
           .get("/api/conversations")
           .set("Authorization", helpers.makeAuthHeader(testUsers[0]))

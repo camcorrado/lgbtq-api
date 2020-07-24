@@ -53,9 +53,9 @@ usersRouter
       .catch(next);
   })
   .patch(requireAuth, (req, res, next) => {
-    const { id, full_name, email, password, deactivated } = req.body;
+    const { password, deactivated } = req.body;
 
-    for (const field of ["full_name", "email", "password", "deactivated"]) {
+    for (const field of ["password", "deactivated"]) {
       if (!req.body[field]) {
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
@@ -74,13 +74,14 @@ usersRouter
     return UsersService.hashPassword(password).then((hashedPassword) => {
       const updatedUser = {
         password: hashedPassword,
-        id,
-        full_name,
-        email,
         deactivated,
       };
 
-      return UsersService.updateUser(req.app.get("db"), id, updatedUser)
+      return UsersService.updateUser(
+        req.app.get("db"),
+        req.user.id,
+        updatedUser
+      )
         .then((user) => {
           res
             .status(204)

@@ -214,13 +214,11 @@ describe("Users Endpoints", function () {
     context("Given there are users in the database", () => {
       beforeEach("insert users", () => helpers.seedUsers(db, testUsers));
 
-      const requiredFields = ["full_name", "password", "email", "deactivated"];
+      const requiredFields = ["password", "deactivated"];
 
       requiredFields.forEach((field) => {
         const registerAttemptBody = {
-          full_name: "test full_name",
           password: "Password123!",
-          email: "email@email.com",
           deactivated: "false",
           ...testUser,
         };
@@ -238,9 +236,7 @@ describe("Users Endpoints", function () {
 
       it(`responds 400 'Password must be longer than 8 characters' when empty password`, () => {
         const userShortPassword = {
-          full_name: "test full_name",
           password: "1234567",
-          email: "email@email.com",
           deactivated: "false",
         };
 
@@ -253,9 +249,7 @@ describe("Users Endpoints", function () {
 
       it(`responds 400 'Password must be less than 72 characters' when long password`, () => {
         const userLongPassword = {
-          full_name: "test full_name",
           password: "*".repeat(73),
-          email: "email@email.com",
           deactivated: "false",
         };
 
@@ -268,9 +262,7 @@ describe("Users Endpoints", function () {
 
       it(`responds 400 error when password starts with spaces`, () => {
         const userPasswordStartsSpaces = {
-          full_name: "test full_name",
           password: " 1Aa!2Bb@",
-          email: "email@email.com",
           deactivated: "false",
         };
 
@@ -285,9 +277,7 @@ describe("Users Endpoints", function () {
 
       it(`responds 400 error when password ends with spaces`, () => {
         const userPasswordEndsSpaces = {
-          full_name: "test full_name",
           password: "1Aa!2Bb@ ",
-          email: "email@email.com",
           deactivated: "false",
         };
 
@@ -302,9 +292,7 @@ describe("Users Endpoints", function () {
 
       it(`responds 400 error when password isn't complex enough`, () => {
         const userPasswordNotComplex = {
-          full_name: "test full_name",
           password: "11AAaabb",
-          email: "email@email.com",
           deactivated: "false",
         };
 
@@ -319,9 +307,7 @@ describe("Users Endpoints", function () {
 
       it("responds with 204 and updates the user", () => {
         const updatedUser = {
-          full_name: "John Updated",
           password: "Password123!",
-          email: "email@email.com",
           deactivated: "false",
           ...testUser,
         };

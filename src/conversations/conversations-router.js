@@ -20,8 +20,8 @@ conversationsRouter
       .catch(next);
   })
   .post(requireAuth, (req, res, next) => {
-    const { users, new_msg } = req.body;
-    const newConversation = { users, new_msg };
+    const { users } = req.body;
+    const newConversation = { users };
     for (const [key, value] of Object.entries(newConversation)) {
       if (value == null) {
         return res

@@ -79,9 +79,6 @@ describe("Conversations Endpoints", function () {
     it(`creates a conversation, responding with 201 and the new conversation`, function () {
       const newConversation = {
         users: [1, 2, 3],
-        new_msg: moment(new Date("2029-01-22T16:28:32.615Z")).format(
-          "ddd MMM DD YYYY"
-        ),
       };
       return supertest(app)
         .post("/api/conversations")

@@ -265,7 +265,6 @@ describe("Profiles Endpoints", function () {
         };
 
         it(`responds with 400 required error when '${field}' is missing`, () => {
-          console.log({ field });
           delete registerAttemptBody[field];
 
           return supertest(app)
